@@ -1,0 +1,65 @@
+package net.jnwd.litterBox.data;
+
+public class LitterAttribute {
+	public static final String table = "litterAttribute";
+
+	public static final String[][] columns = {
+		{
+			"_id", "integer"
+		},
+		{
+			"description", "text"
+		},
+		{
+			"type", "text"
+		}
+	};
+
+	private Long id;
+	private String description;
+	private String type;
+
+	public LitterAttribute() {
+		super();
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public static String createCommand() {
+		String command = "Create table " + LitterAttribute.table + " (";
+
+		for (String[] column : columns) {
+			if (column[0].equalsIgnoreCase("_id")) {
+				command += "_id integer PRIMARY KEY autoincrement";
+			} else {
+				command += ", " + column[0] + " " + column[1];
+			}
+		}
+
+		command += ");";
+
+		return command;
+	}
+}
