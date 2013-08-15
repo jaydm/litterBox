@@ -1,21 +1,11 @@
 package net.jnwd.litterBox.data;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
-import android.R;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.res.Resources;
-import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
 
 public class LitterDBase {
@@ -58,6 +48,7 @@ public class LitterDBase {
 	}
 
 	private static class DatabaseOpenHelper extends SQLiteOpenHelper {
+		@SuppressWarnings("unused")
 		private final Context mHelperContext;
 		private SQLiteDatabase mDatabase;
 
@@ -93,7 +84,15 @@ public class LitterDBase {
 
 			mDatabase.execSQL(LitterAttribute.createCommand());
 
+			Log.i(TAG, "Create attribute value table...");
+
+			mDatabase.execSQL(LitterAttributeValue.createCommand());
+
 			Log.i(TAG, "Finished creating tables!");
+
+			Log.i(TAG, "Now put something into it...");
+
+			loadDatabase();
 		}
 
 		@Override
@@ -116,7 +115,7 @@ public class LitterDBase {
 				@Override
 				public void run() {
 					try {
-						loadModels();
+						loadBases();
 					} catch (IOException e) {
 						throw new RuntimeException(e);
 					}
@@ -124,66 +123,57 @@ public class LitterDBase {
 			}).start();
 		}
 
-		private void loadModels() throws IOException {
-			Log.i(TAG, "Open up the raw data file...");
-			Log.i(TAG, "Open a reference to the app resources...");
+		private void loadBases() throws IOException {
+			Log.i(TAG, "Create a base class: Address");
 
-			final Resources resources = mHelperContext.getResources();
+			long addressClassID = mDatabase.insert(LitterClass.table, null, new LitterClass("Address", 1).addNew());
 
-			Log.i(TAG, "Open the raw data file...Get an inputStream...");
+			Log.i(TAG, "Give it some attributes...");
 
-			InputStream inputStream = resources.openRawResource(R.raw.model);
+			long attributeID;
 
-			Log.i(TAG, "Set up a buffered reader...");
+			Log.i(TAG, "Address line 1...");
 
-			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+			attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("Address1", "freeformText").addNew());
+			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 10, null, attributeID).addNew());
 
-			try {
-				String line;
+			Log.i(TAG, "Address line 2...");
 
-				List<Model> allModels = new ArrayList<Model>();
+			attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("Address2", "freeformText").addNew());
+			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 20, null, attributeID).addNew());
 
-				Log.i(TAG, "Spin through the file...Only grab one copy of each model!");
+			Log.i(TAG, "Address line 3...");
 
-				while ((line = reader.readLine()) != null) {
-					Model model = new Model(line);
+			attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("Address3", "freeformText").addNew());
+			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 30, null, attributeID).addNew());
 
-					if (! allModels.contains(model)) {
-						allModels.add(model);
+			Log.i(TAG, "City...");
 
-						long id = addModel(model);
+			attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("City", "freeformText").addNew());
+			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 40, null, attributeID).addNew());
 
-						if (id < 0) {
-							Log.e(TAG, "unable to add model: " + model.toString());
-						}
-					}
-				}
+			Log.i(TAG, "State...");
 
-				Log.i(TAG, "Finished building model list...");
-			} finally {
-				reader.close();
-			}
+			attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("State", "enumText").addNew());
+			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 50, null, attributeID).addNew());
 
-			Log.i(TAG, "Finished loading the raw file into the database...");
-		}
+			Log.i(TAG, "Fill in some state values...");
 
-		public long addModel(Model model) {
-			ContentValues initialValues = new ContentValues();
+			mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(attributeID, 10, "AK").addNew());
+			mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(attributeID, 20, "AL").addNew());
+			mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(attributeID, 30, "AR").addNew());
+			mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(attributeID, 40, "AZ").addNew());
+			mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(attributeID, 50, "IA").addNew());
+			mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(attributeID, 60, "IL").addNew());
+			mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(attributeID, 70, "IN").addNew());
+			mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(attributeID, 80, "NJ").addNew());
+			mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(attributeID, 90, "NM").addNew());
+			mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(attributeID, 100, "NY").addNew());
 
-			initialValues.put("_id", model.id);
-			initialValues.put(Model.COL_MODEL_NAME, model.name);
-			initialValues.put(Model.COL_MODEL_TYPE, model.modelType);
-			initialValues.put(Model.COL_CREATOR, model.creator);
-			initialValues.put(Model.COL_BOOK_TITLE, model.bookTitle);
-			initialValues.put(Model.COL_ISBN, model.ISBN);
-			initialValues.put(Model.COL_ON_PAGE, model.page);
-			initialValues.put(Model.COL_DIFFICULTY, model.difficulty);
-			initialValues.put(Model.COL_PAPER, model.paper);
-			initialValues.put(Model.COL_PIECES, model.pieces);
-			initialValues.put(Model.COL_GLUE, model.glue);
-			initialValues.put(Model.COL_CUTS, model.cuts);
+			Log.i(TAG, "Zip code...");
 
-			return mDatabase.insert(FTS_VIRTUAL_TABLE, null, initialValues);
+			attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("Zip", "freeformText").addNew());
+			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 60, null, attributeID).addNew());
 		}
 	}
 }

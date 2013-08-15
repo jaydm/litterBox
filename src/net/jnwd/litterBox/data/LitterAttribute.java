@@ -1,5 +1,7 @@
 package net.jnwd.litterBox.data;
 
+import android.content.ContentValues;
+
 public class LitterAttribute {
 	public static final String table = "litterAttribute";
 
@@ -21,6 +23,13 @@ public class LitterAttribute {
 
 	public LitterAttribute() {
 		super();
+	}
+
+	public LitterAttribute(String desc, String typ) {
+		this();
+
+		description = desc;
+		type = typ;
 	}
 
 	public Long getId() {
@@ -61,5 +70,14 @@ public class LitterAttribute {
 		command += ");";
 
 		return command;
+	}
+
+	public ContentValues addNew() {
+		ContentValues initialValues = new ContentValues();
+
+		initialValues.put(columns[1][0], description);
+		initialValues.put(columns[2][0], type);
+
+		return initialValues;
 	}
 }

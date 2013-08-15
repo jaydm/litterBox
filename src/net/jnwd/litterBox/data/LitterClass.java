@@ -1,5 +1,7 @@
 package net.jnwd.litterBox.data;
 
+import android.content.ContentValues;
+
 public class LitterClass {
 	public static final String table = "litterClass";
 
@@ -17,10 +19,17 @@ public class LitterClass {
 
 	private Long id;
 	private String description;
-	private Boolean container;
+	private Long container;
 
 	public LitterClass() {
 		super();
+	}
+
+	public LitterClass(String desc, long cont) {
+		this();
+
+		description = desc;
+		container = cont;
 	}
 
 	public Long getId() {
@@ -39,11 +48,11 @@ public class LitterClass {
 		this.description = description;
 	}
 
-	public Boolean getContainer() {
+	public Long getContainer() {
 		return container;
 	}
 
-	public void setContainer(Boolean container) {
+	public void setContainer(Long container) {
 		this.container = container;
 	}
 
@@ -61,5 +70,14 @@ public class LitterClass {
 		command += ");";
 
 		return command;
+	}
+
+	public ContentValues addNew() {
+		ContentValues initialValues = new ContentValues();
+
+		initialValues.put(columns[1][0], description);
+		initialValues.put(columns[2][0], container);
+
+		return initialValues;
 	}
 }
