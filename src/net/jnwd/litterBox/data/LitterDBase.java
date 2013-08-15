@@ -88,6 +88,14 @@ public class LitterDBase {
 
 			mDatabase.execSQL(LitterAttributeValue.createCommand());
 
+			Log.i(TAG, "Create entity table...");
+
+			mDatabase.execSQL(LitterEntity.createCommand());
+
+			Log.i(TAG, "Create entity attribute (value) table...");
+
+			mDatabase.execSQL(LitterEntityAttribute.createCommand());
+
 			Log.i(TAG, "Finished creating tables!");
 
 			Log.i(TAG, "Now put something into it...");
@@ -102,6 +110,9 @@ public class LitterDBase {
 			db.execSQL("drop table if exists " + LitterClass.table);
 			db.execSQL("drop table if exists " + LitterClassAttribute.table);
 			db.execSQL("drop table if exists " + LitterAttribute.table);
+			db.execSQL("drop table if exists " + LitterAttributeValue.table);
+			db.execSQL("drop table if exists " + LitterEntity.table);
+			db.execSQL("drop table if exists " + LitterEntityAttribute.table);
 
 			Log.i(TAG, "Now...recreate the database...");
 
@@ -126,7 +137,7 @@ public class LitterDBase {
 		private void loadBases() throws IOException {
 			Log.i(TAG, "Create a base class: Address");
 
-			long addressClassID = mDatabase.insert(LitterClass.table, null, new LitterClass("Address", 1).addNew());
+			long addressClassID = mDatabase.insert(LitterClass.table, null, new LitterClass("Address").addNew());
 
 			Log.i(TAG, "Give it some attributes...");
 

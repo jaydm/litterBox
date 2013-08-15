@@ -2,8 +2,8 @@ package net.jnwd.litterBox.data;
 
 import android.content.ContentValues;
 
-public class LitterClass {
-	public static final String table = "litterClass";
+public class LitterEntity {
+	public static final String table = "litterEntity";
 
 	public static final String[][] columns = {
 		{
@@ -11,20 +11,24 @@ public class LitterClass {
 		},
 		{
 			"description", "text"
+		}, {
+			"classID", "integer"
 		}
 	};
 
 	private Long id;
 	private String description;
+	private Long classID;
 
-	public LitterClass() {
+	public LitterEntity() {
 		super();
 	}
 
-	public LitterClass(String desc) {
+	public LitterEntity(String desc, long classID) {
 		this();
 
 		description = desc;
+		this.classID = classID;
 	}
 
 	public Long getId() {
@@ -41,6 +45,14 @@ public class LitterClass {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Long getClassID() {
+		return classID;
+	}
+
+	public void setClassID(Long classID) {
+		this.classID = classID;
 	}
 
 	public static String createCommand() {
@@ -63,7 +75,17 @@ public class LitterClass {
 		ContentValues initialValues = new ContentValues();
 
 		initialValues.put(columns[1][0], description);
+		initialValues.put(columns[2][0], classID);
 
 		return initialValues;
+	}
+
+	public boolean updateAttributeValue(int[] path, Long valueID, String valueData) {
+		// This routine will need to follow the given path
+		// and update the appropriate value...
+		// if successful - the return value should be true
+		// otherwise - false
+
+		return false;
 	}
 }
