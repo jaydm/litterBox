@@ -5,25 +5,29 @@ import android.content.ContentValues;
 public class LitterAttribute {
 	public static final String table = "litterAttribute";
 
+	public static final String column_ID = "_id";
+	public static final String column_Description = "description";
+	public static final String column_Type = "type";
+
 	public static final String[][] columns = {
 		{
-			"_id", "integer"
+			column_ID, "integer"
 		},
 		{
-			"description", "text"
+			column_Description, "text"
 		},
 		{
-			"type", "text"
+			column_Type, "text"
 		}
 	};
 
-	public static final String[] listColumns = {
-		"_id",
-		"description",
-		"type"
+	public static String[] allColumns = {
+		column_ID,
+		column_Description,
+		column_Type
 	};
 
-	public static final int showColumn = 1; // description
+	public static final String showColumn = "description";
 
 	private Long id;
 	private String description;

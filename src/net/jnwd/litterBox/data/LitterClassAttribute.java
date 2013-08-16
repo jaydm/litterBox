@@ -1,5 +1,8 @@
 package net.jnwd.litterBox.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.ContentValues;
 
 public class LitterClassAttribute {
@@ -107,5 +110,15 @@ public class LitterClassAttribute {
 		initialValues.put(columns[4][0], attributeID);
 
 		return initialValues;
+	}
+
+	public static String[] allColumns() {
+		List<String> columnNames = new ArrayList<String>();
+
+		for (int i = 0; i < columns.length; i++) {
+			columnNames.add(columns[i][0]);
+		}
+
+		return (String[]) columnNames.toArray();
 	}
 }

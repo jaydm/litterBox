@@ -1,8 +1,6 @@
 package net.jnwd.litterBox.data;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -48,6 +46,36 @@ public class LitterDBase {
 		if (mDatabaseOpenHelper != null) {
 			mDatabaseOpenHelper.close();
 		}
+	}
+
+	public Cursor getClassList() {
+		Cursor mCursor = mDb.query(LitterClass.table, LitterClass.allColumns(), null, null, null, null, null);
+
+		if (mCursor != null) {
+			mCursor.moveToFirst();
+		}
+
+		return mCursor;
+	}
+
+	public Cursor getAttributeList() {
+		return getAttributeList(null);
+	}
+
+	public Cursor getAttributeList(Long classID) {
+		// the actual implementation of getting all of the attributes
+		// that belong to a class is somewhat more complicated...
+		Cursor mCursor = mDb.query(LitterAttribute.table, LitterAttribute.allColumns, null, null, null, null, null);
+
+		if (mCursor != null) {
+			mCursor.moveToFirst();
+		}
+
+		return mCursor;
+	}
+
+	public Cursor getAttribute(Long attributeID) {
+		return mDb.query(LitterAttribute.table, LitterAttribute.allColumns, "_id = " + attributeID.toString(), null, null, null, null, null);
 	}
 
 	private static class DatabaseOpenHelper extends SQLiteOpenHelper {
@@ -187,21 +215,5 @@ public class LitterDBase {
 			attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("Zip", "freeformText").addNew());
 			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 60, null, attributeID).addNew());
 		}
-	}
-
-	public List<String> getAttributeList() {
-		Cursor mCursor = mDb.query(LitterAttribute.table, LitterAttribute.listColumns, null, null, null, null, null);
-
-		if (mCursor == null) {
-			return null;
-		}
-
-		ArrayList<String> mArrayList = new ArrayList<String>();
-
-		for (mCursor.moveToFirst(); ! mCursor.isAfterLast(); mCursor.moveToNext()) {
-			mArrayList.add(mCursor.getString(mCursor.getColumnIndex(LitterAttribute.columns[LitterAttribute.showColumn][0])));
-		}
-
-		return mArrayList;
 	}
 }
