@@ -8,12 +8,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.ArrayAdapter;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
 public class MaintainAttributes extends Activity {
 	private LitterDBase dbHelper;
-	private SimpleCursorAdapter dataAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
