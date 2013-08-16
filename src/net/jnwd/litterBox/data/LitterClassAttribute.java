@@ -3,7 +3,7 @@ package net.jnwd.litterBox.data;
 import android.content.ContentValues;
 
 public class LitterClassAttribute {
-	public static final String table = "litterAttribute";
+	public static final String table = "litterClassAttribute";
 
 	public static final String[][] columns = {
 		{

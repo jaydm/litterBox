@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="attribute_types">
+        <item>Select one</item>
+        <item>Text Entry</item>
+        <item>Text (Select)</item>
+        <item>Integer Entry</item>
+        <item>Integer (Select)</item>
+        <item>Decimal Entry</item>
+        <item>Boolean (true/false)</item>
+    </string-array>
+
+</resources>

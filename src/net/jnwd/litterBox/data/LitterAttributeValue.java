@@ -68,7 +68,7 @@ public class LitterAttributeValue {
 	}
 
 	public static String createCommand() {
-		String command = "Create table " + LitterClassAttribute.table + " (";
+		String command = "Create table " + LitterAttributeValue.table + " (";
 
 		for (String[] column : columns) {
 			if (column[0].equalsIgnoreCase("_id")) {

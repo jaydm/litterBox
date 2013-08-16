@@ -1,8 +1,11 @@
 package net.jnwd.litterBox.data;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -70,29 +73,27 @@ public class LitterDBase {
 
 			Log.i(TAG, "Executing the create table scripts...");
 
-			Log.i(TAG, "Create class table...");
-
-			Log.i(TAG, "Command: " + LitterClass.createCommand());
+			Log.i(TAG, "Create class table: " + LitterClass.createCommand());
 
 			mDatabase.execSQL(LitterClass.createCommand());
 
-			Log.i(TAG, "Create class attribute xref table...");
-
-			mDatabase.execSQL(LitterClassAttribute.createCommand());
-
-			Log.i(TAG, "Create attribute table...");
+			Log.i(TAG, "Create attribute table: " + LitterAttribute.createCommand());
 
 			mDatabase.execSQL(LitterAttribute.createCommand());
 
-			Log.i(TAG, "Create attribute value table...");
+			Log.i(TAG, "Create class attribute xref table: " + LitterClassAttribute.createCommand());
+
+			mDatabase.execSQL(LitterClassAttribute.createCommand());
+
+			Log.i(TAG, "Create attribute value table: " + LitterAttributeValue.createCommand());
 
 			mDatabase.execSQL(LitterAttributeValue.createCommand());
 
-			Log.i(TAG, "Create entity table...");
+			Log.i(TAG, "Create entity table: " + LitterEntity.createCommand());
 
 			mDatabase.execSQL(LitterEntity.createCommand());
 
-			Log.i(TAG, "Create entity attribute (value) table...");
+			Log.i(TAG, "Create entity attribute (value) table: " + LitterEntityAttribute.createCommand());
 
 			mDatabase.execSQL(LitterEntityAttribute.createCommand());
 
@@ -186,5 +187,21 @@ public class LitterDBase {
 			attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("Zip", "freeformText").addNew());
 			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 60, null, attributeID).addNew());
 		}
+	}
+
+	public List<String> getAttributeList() {
+		Cursor mCursor = mDb.query(LitterAttribute.table, LitterAttribute.listColumns, null, null, null, null, null);
+
+		if (mCursor == null) {
+			return null;
+		}
+
+		ArrayList<String> mArrayList = new ArrayList<String>();
+
+		for (mCursor.moveToFirst(); ! mCursor.isAfterLast(); mCursor.moveToNext()) {
+			mArrayList.add(mCursor.getString(mCursor.getColumnIndex(LitterAttribute.columns[LitterAttribute.showColumn][0])));
+		}
+
+		return mArrayList;
 	}
 }

@@ -83,7 +83,7 @@ public class LitterEntityAttribute {
 	}
 
 	public static String createCommand() {
-		String command = "Create table " + LitterClass.table + " (";
+		String command = "Create table " + LitterEntityAttribute.table + " (";
 
 		for (String[] column : columns) {
 			if (column[0].equalsIgnoreCase("_id")) {

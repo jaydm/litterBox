@@ -56,7 +56,7 @@ public class LitterEntity {
 	}
 
 	public static String createCommand() {
-		String command = "Create table " + LitterClass.table + " (";
+		String command = "Create table " + LitterEntity.table + " (";
 
 		for (String[] column : columns) {
 			if (column[0].equalsIgnoreCase("_id")) {

@@ -17,6 +17,14 @@ public class LitterAttribute {
 		}
 	};
 
+	public static final String[] listColumns = {
+		"_id",
+		"description",
+		"type"
+	};
+
+	public static final int showColumn = 1; // description
+
 	private Long id;
 	private String description;
 	private String type;

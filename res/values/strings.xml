@@ -1,5 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">litterBox</string>
+    <string name="title_activity_litter_box">LitterBox</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="title_activity_maintain_entities">Maintain Entities</string>
+    <string name="title_activity_maintain_classes">Maintain Classes</string>
+    <string name="title_activity_maintain_attributes">Maintain Attributes</string>
+    
+    <string name="activity_attribute_label">Attribute ID:</string>
+    <string name="activity_attribute_description">Description:</string>
+    <string name="activity_attribute_type_label">Type:</string>
+    
+    <string name="save_button_label">Save</string>
+    <string name="add_new_button_label">Add New</string>
 
 </resources>
