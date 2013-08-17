@@ -65,15 +65,29 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 
 				Cursor selectedAttribute = dbHelper.getAttribute(id);
 
-				// Log.i(TAG, "Try to pull out the type column...");
+				if (selectedAttribute == null) {
+					Log.i(TAG, "The cursor is null!!!");
 
-				// String type =
-				// selectedAttribute.getString(selectedAttribute.getColumnIndex(LitterAttribute.column_Type));
+					return;
+				}
 
-				// Log.i(TAG, "Got type: " + type);
+				Log.i(TAG, "There are " + selectedAttribute.getColumnCount() + " columns in the cursor.");
 
-				// Toast.makeText(parent.getContext(), "Selected ID: " + id +
-				// " type: " + type, Toast.LENGTH_SHORT).show();
+				Log.i(TAG, "Try to pull out the type column...");
+
+				int typeColumn = selectedAttribute.getColumnIndex(LitterAttribute.column_Type);
+
+				Log.i(TAG, "The type column is column " + typeColumn + " in the cursor.");
+
+				Log.i(TAG, "Column[0]: " + selectedAttribute.getLong(0));
+				Log.i(TAG, "Column[1]: " + selectedAttribute.getString(1));
+				Log.i(TAG, "Column[2]: " + selectedAttribute.getString(2));
+
+				String type = selectedAttribute.getString(selectedAttribute.getColumnIndex(LitterAttribute.column_Type));
+
+				Log.i(TAG, "Got type: " + type);
+
+				Toast.makeText(parent.getContext(), "Selected ID: " + id + " type: " + type, Toast.LENGTH_SHORT).show();
 			}
 
 			@Override

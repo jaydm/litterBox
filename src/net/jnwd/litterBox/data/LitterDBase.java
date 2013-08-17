@@ -75,7 +75,15 @@ public class LitterDBase {
 	}
 
 	public Cursor getAttribute(Long attributeID) {
-		return mDb.query(LitterAttribute.table, LitterAttribute.allColumns, "_id = " + attributeID.toString(), null, null, null, null, null);
+		Cursor cursor = mDb.query(LitterAttribute.table, LitterAttribute.allColumns, "_id = " + attributeID.toString(), null, null, null, null, null);
+
+		if (cursor == null) {
+			return null;
+		}
+
+		cursor.moveToFirst();
+
+		return cursor;
 	}
 
 	private static class DatabaseOpenHelper extends SQLiteOpenHelper {
