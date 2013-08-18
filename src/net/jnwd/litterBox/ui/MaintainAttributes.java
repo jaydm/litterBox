@@ -11,10 +11,9 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.TextView;
 
 public class MaintainAttributes extends Activity implements OnItemSelectedListener {
 	private final String TAG = "Maintain Attributes";
@@ -87,7 +86,9 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 
 				Log.i(TAG, "Got type: " + type);
 
-				Toast.makeText(parent.getContext(), "Selected ID: " + id + " type: " + type, Toast.LENGTH_SHORT).show();
+				TextView attributeType = (TextView) findViewById(R.id.txtMaintainAttributeType);
+
+				attributeType.setText(type.toString());
 			}
 
 			@Override
@@ -95,20 +96,6 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 
 			}
 		});
-
-		Log.i(TAG, "Create a reference to the attribute type spinner...");
-
-		Spinner attributeTypes = (Spinner) findViewById(R.id.listMaintainAttributeType);
-
-		Log.i(TAG, "Create the arrayAdapter connected to the resource file...");
-
-		ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(this, R.array.attribute_types, android.R.layout.simple_spinner_item);
-
-		typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-		Log.i(TAG, "Connect the adapter to the attribute type spinner...");
-
-		attributeTypes.setAdapter(typeAdapter);
 	}
 
 	@Override

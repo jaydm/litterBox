@@ -4,6 +4,8 @@
     <string name="app_name">litterBox</string>
     <string name="title_activity_litter_box">LitterBox</string>
     <string name="action_settings">Settings</string>
+    <string name="action_add_attribute">Add New Attribute</string>
+    <string name="action_add_class">Add New Class</string>
     <string name="title_activity_maintain_entities">Maintain Entities</string>
     <string name="title_activity_maintain_classes">Maintain Classes</string>
     <string name="title_activity_maintain_attributes">Maintain Attributes</string>
