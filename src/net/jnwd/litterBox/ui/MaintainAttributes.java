@@ -88,7 +88,7 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 
 				TextView attributeType = (TextView) findViewById(R.id.txtMaintainAttributeType);
 
-				attributeType.setText(type.toString());
+				attributeType.setText("Type: " + type.toString());
 			}
 
 			@Override

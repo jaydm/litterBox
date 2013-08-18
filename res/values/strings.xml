@@ -14,5 +14,6 @@
     <string name="activity_attribute_type_label">Type:</string>
     <string name="save_button_label">Save</string>
     <string name="add_new_button_label">Add New</string>
+    <string name="add_new_attribute_value">Add New Attribute Value</string>
 
 </resources>
