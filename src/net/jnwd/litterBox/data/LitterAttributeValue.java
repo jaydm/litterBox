@@ -8,6 +8,11 @@ import android.content.ContentValues;
 public class LitterAttributeValue {
 	public static final String table = "litterAttributeValue";
 
+	public static final String column_ID = "_id";
+	public static final String column_AttributeID = "attributeID";
+	public static final String column_Sequence = "sequence";
+	public static final String column_Value = "value";
+
 	public static final String[][] columns = {
 		{
 			"_id", "integer"
@@ -21,6 +26,13 @@ public class LitterAttributeValue {
 		{
 			"value", "text"
 		}
+	};
+
+	public static String[] allColumns = {
+		column_ID,
+		column_AttributeID,
+		column_Sequence,
+		column_Value
 	};
 
 	private Long id;
