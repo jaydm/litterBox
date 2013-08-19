@@ -1,8 +1,5 @@
 package net.jnwd.litterBox.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.ContentValues;
 
 public class LitterAttributeValue {
@@ -12,6 +9,8 @@ public class LitterAttributeValue {
 	public static final String column_AttributeID = "attributeID";
 	public static final String column_Sequence = "sequence";
 	public static final String column_Value = "value";
+
+	public static final String showColumn = "value";
 
 	public static final String[][] columns = {
 		{
@@ -106,15 +105,5 @@ public class LitterAttributeValue {
 		initialValues.put(columns[3][0], value);
 
 		return initialValues;
-	}
-
-	public static String[] allColumns() {
-		List<String> columnNames = new ArrayList<String>();
-
-		for (int i = 0; i < columns.length; i++) {
-			columnNames.add(columns[i][0]);
-		}
-
-		return (String[]) columnNames.toArray();
 	}
 }

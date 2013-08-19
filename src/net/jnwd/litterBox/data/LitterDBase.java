@@ -87,11 +87,19 @@ public class LitterDBase {
 	}
 
 	public Cursor getAttributeValues(Long attributeID) {
-		Cursor cursor = mDb.query(LitterAttributeValue.table, LitterAttributeValue.allColumns, "attributeID = " + attributeID.toString(), null, null, null, null, "sequence");
+		Log.i(TAG, "Coming into the get attribute values method...");
+
+		Log.i(TAG, "Trying to get the cursor...");
+
+		Cursor cursor = mDb.query(LitterAttributeValue.table, LitterAttributeValue.allColumns, "attributeID = " + attributeID.toString(), null, null, null, "sequence");
 
 		if (cursor == null) {
+			Log.i(TAG, "Null results set...Return null...");
+
 			return null;
 		}
+
+		Log.i(TAG, "There are results...Return them!");
 
 		cursor.moveToFirst();
 

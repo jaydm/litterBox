@@ -2,6 +2,7 @@ package net.jnwd.litterBox.ui;
 
 import net.jnwd.litterBox.R;
 import net.jnwd.litterBox.data.LitterAttribute;
+import net.jnwd.litterBox.data.LitterAttributeValue;
 import net.jnwd.litterBox.data.LitterDBase;
 import android.app.Activity;
 import android.database.Cursor;
@@ -11,6 +12,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -51,51 +53,14 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 
 		Log.i(TAG, "Create the cursor adapter...");
 
-		SimpleCursorAdapter attributeAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, attributeCursor, from, to);
+		@SuppressWarnings("deprecation")
+ SimpleCursorAdapter attributeAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, attributeCursor, from, to);
 
 		Log.i(TAG, "Connect adapter to the spinner...");
 
 		attributes.setAdapter(attributeAdapter);
 
-		attributes.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				Log.i(TAG, "Get the selected attribute row: " + id);
-
-				Cursor selectedAttribute = dbHelper.getAttribute(id);
-
-				if (selectedAttribute == null) {
-					Log.i(TAG, "The cursor is null!!!");
-
-					return;
-				}
-
-				Log.i(TAG, "There are " + selectedAttribute.getColumnCount() + " columns in the cursor.");
-
-				Log.i(TAG, "Try to pull out the type column...");
-
-				int typeColumn = selectedAttribute.getColumnIndex(LitterAttribute.column_Type);
-
-				Log.i(TAG, "The type column is column " + typeColumn + " in the cursor.");
-
-				Log.i(TAG, "Column[0]: " + selectedAttribute.getLong(0));
-				Log.i(TAG, "Column[1]: " + selectedAttribute.getString(1));
-				Log.i(TAG, "Column[2]: " + selectedAttribute.getString(2));
-
-				String type = selectedAttribute.getString(selectedAttribute.getColumnIndex(LitterAttribute.column_Type));
-
-				Log.i(TAG, "Got type: " + type);
-
-				TextView attributeType = (TextView) findViewById(R.id.txtMaintainAttributeType);
-
-				attributeType.setText("Type: " + type.toString());
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-
-			}
-		});
+		attributes.setOnItemSelectedListener(this);
 	}
 
 	@Override
@@ -107,14 +72,67 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 	}
 
 	@Override
-	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		// TODO Auto-generated method stub
+	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		if (parent.getId() == R.id.lstAttributeValues) {
+			return;
+		}
 
+		Log.i(TAG, "Get the selected attribute row: " + id);
+
+		Cursor selectedAttribute = dbHelper.getAttribute(id);
+
+		if (selectedAttribute == null) {
+			Log.i(TAG, "The cursor is null!!!");
+
+			return;
+		}
+
+		Log.i(TAG, "There are " + selectedAttribute.getColumnCount() + " columns in the cursor.");
+
+		Log.i(TAG, "Try to pull out the type column...");
+
+		int typeColumn = selectedAttribute.getColumnIndex(LitterAttribute.column_Type);
+
+		Log.i(TAG, "The type column is column " + typeColumn + " in the cursor.");
+
+		Log.i(TAG, "Column[0]: " + selectedAttribute.getLong(0));
+		Log.i(TAG, "Column[1]: " + selectedAttribute.getString(1));
+		Log.i(TAG, "Column[2]: " + selectedAttribute.getString(2));
+
+		String type = selectedAttribute.getString(selectedAttribute.getColumnIndex(LitterAttribute.column_Type));
+
+		Log.i(TAG, "Got type: " + type);
+
+		TextView attributeType = (TextView) findViewById(R.id.txtMaintainAttributeType);
+
+		attributeType.setText("Type: " + type.toString());
+
+		Log.i(TAG, "Loading the stored values for the attribute...");
+
+		Cursor valueCursor = dbHelper.getAttributeValues(id);
+
+		Log.i(TAG, "Got the cursor? " + (valueCursor == null ? "Null!?!?!?" : "Cursor Okay!"));
+
+		String[] from = {
+							LitterAttributeValue.showColumn
+		};
+
+		int[] to = {
+					android.R.id.text1
+		};
+
+		Log.i(TAG, "Create the cursor adapter...");
+
+		@SuppressWarnings("deprecation")
+		SimpleCursorAdapter valueAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, valueCursor, from, to);
+
+		ListView listView = (ListView) findViewById(R.id.lstAttributeValues);
+
+		listView.setAdapter(valueAdapter);
 	}
 
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {
-		// TODO Auto-generated method stub
 
 	}
 
