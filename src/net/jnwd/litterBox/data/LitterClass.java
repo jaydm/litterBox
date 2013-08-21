@@ -1,8 +1,5 @@
 package net.jnwd.litterBox.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.ContentValues;
 
 public class LitterClass {

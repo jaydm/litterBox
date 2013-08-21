@@ -1,10 +1,8 @@
 package net.jnwd.litterBox.ui;
 
 import net.jnwd.litterBox.R;
-import net.jnwd.litterBox.R.layout;
-import net.jnwd.litterBox.R.menu;
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
 
 public class MaintainEntities extends Activity {

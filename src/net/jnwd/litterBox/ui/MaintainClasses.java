@@ -2,7 +2,6 @@ package net.jnwd.litterBox.ui;
 
 import net.jnwd.litterBox.R;
 import net.jnwd.litterBox.data.LitterAttribute;
-import net.jnwd.litterBox.data.LitterAttributeValue;
 import net.jnwd.litterBox.data.LitterClass;
 import net.jnwd.litterBox.data.LitterClassAttribute;
 import net.jnwd.litterBox.data.LitterDBase;
@@ -167,9 +166,9 @@ public class MaintainClasses extends Activity implements OnItemSelectedListener 
 	private void fillClassAttributes(long classID) {
 		Log.i(TAG, "Loading the class/attribute list for this class...");
 
-		Cursor classAttributeCursor = dbHelper.getClassAttributes(classID);
+		@SuppressWarnings("unused") Cursor classAttributeCursor = dbHelper.getClassAttributes(classID);
 
-		ListView listView = (ListView) findViewById(R.id.lstClassAttributes);
+		@SuppressWarnings("unused") ListView listView = (ListView) findViewById(R.id.lstClassAttributes);
 
 		// listView.setAdapter(classAttributeAdapter);
 	}
