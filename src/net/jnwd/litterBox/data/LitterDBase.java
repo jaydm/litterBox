@@ -106,6 +106,18 @@ public class LitterDBase {
 		return cursor;
 	}
 
+	public long insertClass(LitterClass clazz) {
+		return mDb.insert(LitterClass.table, null, clazz.addNew());
+	}
+
+	public long insertAttribute(LitterAttribute attribute) {
+		return mDb.insert(LitterAttribute.table, null, attribute.addNew());
+	}
+
+	public long insertAttributeValue(LitterAttributeValue value) {
+		return mDb.insert(LitterAttributeValue.table, null, value.addNew());
+	}
+
 	private static class DatabaseOpenHelper extends SQLiteOpenHelper {
 		@SuppressWarnings("unused")
 		private final Context mHelperContext;

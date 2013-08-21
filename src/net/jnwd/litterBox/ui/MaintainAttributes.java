@@ -10,8 +10,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
@@ -21,6 +24,8 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 	private final String TAG = "Maintain Attributes";
 
 	private LitterDBase dbHelper;
+
+	private long selectedAttribute = - 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +38,28 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 		dbHelper = new LitterDBase(this);
 		dbHelper.open();
 
+		Button addValue = (Button) findViewById(R.id.btnAddAttributeValue);
+
+		addValue.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				EditText addValue = (EditText) findViewById(R.id.newAttributeValue);
+				ListView listView = (ListView) findViewById(R.id.lstAttributeValues);
+
+				int count = listView.getCount();
+
+				LitterAttributeValue newValue = new LitterAttributeValue(selectedAttribute, (count + 1) * 10, addValue.getText().toString());
+
+				dbHelper.insertAttributeValue(newValue);
+
+				fillAttributeValues();
+			}
+		});
+
+		fillAttributeValues();
+	}
+
+	private void fillAttributeValues() {
 		Log.i(TAG, "Create reference to attribute spinner...");
 
 		Spinner attributes = (Spinner) findViewById(R.id.lstMaintainAttributeID);
@@ -53,8 +80,7 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 
 		Log.i(TAG, "Create the cursor adapter...");
 
-		@SuppressWarnings("deprecation")
- SimpleCursorAdapter attributeAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, attributeCursor, from, to);
+		@SuppressWarnings("deprecation") SimpleCursorAdapter attributeAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, attributeCursor, from, to);
 
 		Log.i(TAG, "Connect adapter to the spinner...");
 
@@ -76,6 +102,8 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 		if (parent.getId() == R.id.lstAttributeValues) {
 			return;
 		}
+
+		selectedAttribute = id;
 
 		Log.i(TAG, "Get the selected attribute row: " + id);
 
@@ -123,8 +151,7 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 
 		Log.i(TAG, "Create the cursor adapter...");
 
-		@SuppressWarnings("deprecation")
-		SimpleCursorAdapter valueAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, valueCursor, from, to);
+		@SuppressWarnings("deprecation") SimpleCursorAdapter valueAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, valueCursor, from, to);
 
 		ListView listView = (ListView) findViewById(R.id.lstAttributeValues);
 
