@@ -52,14 +52,16 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 
 				dbHelper.insertAttributeValue(newValue);
 
-				fillAttributeValues();
+				addValue.setText(null);
+
+				fillValues(selectedAttribute);
 			}
 		});
 
-		fillAttributeValues();
+		fillAttributes();
 	}
 
-	private void fillAttributeValues() {
+	private void fillAttributes() {
 		Log.i(TAG, "Create reference to attribute spinner...");
 
 		Spinner attributes = (Spinner) findViewById(R.id.lstMaintainAttributeID);
@@ -89,55 +91,10 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 		attributes.setOnItemSelectedListener(this);
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.maintain_attributes, menu);
-
-		return true;
-	}
-
-	@Override
-	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-		if (parent.getId() == R.id.lstAttributeValues) {
-			return;
-		}
-
-		selectedAttribute = id;
-
-		Log.i(TAG, "Get the selected attribute row: " + id);
-
-		Cursor selectedAttribute = dbHelper.getAttribute(id);
-
-		if (selectedAttribute == null) {
-			Log.i(TAG, "The cursor is null!!!");
-
-			return;
-		}
-
-		Log.i(TAG, "There are " + selectedAttribute.getColumnCount() + " columns in the cursor.");
-
-		Log.i(TAG, "Try to pull out the type column...");
-
-		int typeColumn = selectedAttribute.getColumnIndex(LitterAttribute.column_Type);
-
-		Log.i(TAG, "The type column is column " + typeColumn + " in the cursor.");
-
-		Log.i(TAG, "Column[0]: " + selectedAttribute.getLong(0));
-		Log.i(TAG, "Column[1]: " + selectedAttribute.getString(1));
-		Log.i(TAG, "Column[2]: " + selectedAttribute.getString(2));
-
-		String type = selectedAttribute.getString(selectedAttribute.getColumnIndex(LitterAttribute.column_Type));
-
-		Log.i(TAG, "Got type: " + type);
-
-		TextView attributeType = (TextView) findViewById(R.id.txtMaintainAttributeType);
-
-		attributeType.setText("Type: " + type.toString());
-
+	private void fillValues(long attributeID) {
 		Log.i(TAG, "Loading the stored values for the attribute...");
 
-		Cursor valueCursor = dbHelper.getAttributeValues(id);
+		Cursor valueCursor = dbHelper.getAttributeValues(attributeID);
 
 		Log.i(TAG, "Got the cursor? " + (valueCursor == null ? "Null!?!?!?" : "Cursor Okay!"));
 
@@ -156,6 +113,51 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 		ListView listView = (ListView) findViewById(R.id.lstAttributeValues);
 
 		listView.setAdapter(valueAdapter);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.maintain_attributes, menu);
+
+		return true;
+	}
+
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		if (parent.getId() == R.id.lstAttributeValues) {
+			return;
+		}
+
+		selectedAttribute = id;
+
+		Log.i(TAG, "Get the selected attribute row: " + id);
+
+		Cursor attribute = dbHelper.getAttribute(id);
+
+		if (attribute == null) {
+			Log.i(TAG, "The cursor is null!!!");
+
+			return;
+		}
+
+		String type = attribute.getString(attribute.getColumnIndex(LitterAttribute.column_Type));
+
+		Log.i(TAG, "Got type: " + type);
+
+		EditText addValue = (EditText) findViewById(R.id.newAttributeValue);
+
+		addValue.setEnabled(false);
+
+		if (type.startsWith("enum")) {
+			addValue.setEnabled(true);
+		}
+
+		TextView attributeType = (TextView) findViewById(R.id.txtMaintainAttributeType);
+
+		attributeType.setText("Type: " + type.toString());
+
+		fillValues(id);
 	}
 
 	@Override
