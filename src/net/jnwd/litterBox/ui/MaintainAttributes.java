@@ -164,5 +164,4 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 	public void onNothingSelected(AdapterView<?> arg0) {
 
 	}
-
 }

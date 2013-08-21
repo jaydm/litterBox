@@ -8,23 +8,39 @@ import android.content.ContentValues;
 public class LitterClassAttribute {
 	public static final String table = "litterClassAttribute";
 
+	public static final String column_ID = "_id";
+	public static final String column_ParentID = "parentID";
+	public static final String column_Sequence = "sequence";
+	public static final String column_ClassID = "classID";
+	public static final String column_AttributeID = "attributeID";
+
 	public static final String[][] columns = {
 		{
-			"_id", "integer"
+			column_ID, "integer"
 		},
 		{
-			"parentID", "integer"
+			column_ParentID, "integer"
 		},
 		{
-			"sequence", "integer"
+			column_Sequence, "integer"
 		},
 		{
-			"classID", "integer"
+			column_ClassID, "integer"
 		},
 		{
-			"attributeID", "integer"
+			column_AttributeID, "integer"
 		}
 	};
+
+	public static String[] allColumns = {
+		column_ID,
+		column_ParentID,
+		column_Sequence,
+		column_ClassID,
+		column_AttributeID
+	};
+
+	public static final String showColumn = "description";
 
 	private Long id;
 	private Long parentID;

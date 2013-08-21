@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class LitterDBase {
-	private static final String TAG = "LitterBox";
+	private static final String TAG = "LitterDBase";
 
 	private static final String DATABASE_NAME = "LitterBox";
 	private static final int DATABASE_VERSION = 3;
@@ -49,7 +49,7 @@ public class LitterDBase {
 	}
 
 	public Cursor getClassList() {
-		Cursor mCursor = mDb.query(LitterClass.table, LitterClass.allColumns(), null, null, null, null, null);
+		Cursor mCursor = mDb.query(LitterClass.table, LitterClass.allColumns, null, null, null, null, null);
 
 		if (mCursor != null) {
 			mCursor.moveToFirst();
@@ -106,6 +106,26 @@ public class LitterDBase {
 		return cursor;
 	}
 
+	public Cursor getClassAttributes(Long classID) {
+		Log.i(TAG, "Coming into the get class attributes method...");
+
+		Log.i(TAG, "Trying to get the cursor...");
+
+		Cursor cursor = mDb.query(LitterClassAttribute.table, LitterClassAttribute.allColumns, "parentID = " + classID.toString(), null, null, null, "sequence");
+
+		if (cursor == null) {
+			Log.i(TAG, "Null results set...Return null...");
+
+			return null;
+		}
+
+		Log.i(TAG, "There are results...Return them!");
+
+		cursor.moveToFirst();
+
+		return cursor;
+	}
+
 	public long insertClass(LitterClass clazz) {
 		return mDb.insert(LitterClass.table, null, clazz.addNew());
 	}
@@ -116,6 +136,10 @@ public class LitterDBase {
 
 	public long insertAttributeValue(LitterAttributeValue value) {
 		return mDb.insert(LitterAttributeValue.table, null, value.addNew());
+	}
+
+	public long insertClassAttribute(LitterClassAttribute classAttribute) {
+		return mDb.insert(LitterClassAttribute.table, null, classAttribute.addNew());
 	}
 
 	private static class DatabaseOpenHelper extends SQLiteOpenHelper {

@@ -12,8 +12,12 @@
     <string name="activity_attribute_label">Attribute ID:</string>
     <string name="activity_attribute_description">Description:</string>
     <string name="activity_attribute_type_label">Type:</string>
+    <string name="activity_class_label">Class ID:</string>
     <string name="save_button_label">Save</string>
-    <string name="add_new_button_label">Add New</string>
+    <string name="add_class_label">Add Class:</string>
+    <string name="add_attribute_label">Add Attribute:</string>
     <string name="add_new_attribute_value">Add New Attribute Value</string>
+    <string name="add_new_class">Add Class to Class</string>
+    <string name="add_new_attribute">Add Attribute to Class</string>
 
 </resources>

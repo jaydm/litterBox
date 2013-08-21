@@ -8,14 +8,24 @@ import android.content.ContentValues;
 public class LitterClass {
 	public static final String table = "litterClass";
 
+	public static final String column_ID = "_id";
+	public static final String column_Description = "description";
+
 	public static final String[][] columns = {
 		{
-			"_id", "integer"
+			column_ID, "integer"
 		},
 		{
-			"description", "text"
+			column_Description, "text"
 		}
 	};
+
+	public static String[] allColumns = {
+		column_ID,
+		column_Description
+	};
+
+	public static final String showColumn = "description";
 
 	private Long id;
 	private String description;
@@ -68,15 +78,5 @@ public class LitterClass {
 		initialValues.put(columns[1][0], description);
 
 		return initialValues;
-	}
-
-	public static String[] allColumns() {
-		List<String> columnNames = new ArrayList<String>();
-
-		for (int i = 0; i < columns.length; i++) {
-			columnNames.add(columns[i][0]);
-		}
-
-		return (String[]) columnNames.toArray();
 	}
 }
