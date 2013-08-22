@@ -125,7 +125,9 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-		if (parent.getId() == R.id.lstAttributeValues) {
+		if (parent.getId() != R.id.lstMaintainAttributeID) {
+			Log.i(TAG,"Ignore the item selected signal - wrong spinner...");
+			
 			return;
 		}
 

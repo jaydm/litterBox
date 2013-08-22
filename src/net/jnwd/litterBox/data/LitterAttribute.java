@@ -27,7 +27,7 @@ public class LitterAttribute {
 		column_Type
 	};
 
-	public static final String showColumn = "description";
+	public static final String showColumn = column_Description;
 
 	private Long id;
 	private String description;
