@@ -88,7 +88,6 @@ public class MaintainClasses extends Activity implements OnItemSelectedListener 
 
 		fillClasses();
 
-		// fillAddClasses();
 		fillAddAttributes();
 	}
 
@@ -104,7 +103,7 @@ public class MaintainClasses extends Activity implements OnItemSelectedListener 
 		};
 
 		int[] to = {
-					android.R.id.text2
+					android.R.id.text1
 		};
 
 		@SuppressWarnings("deprecation") SimpleCursorAdapter classAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, classCursor, from, to);
@@ -125,7 +124,7 @@ public class MaintainClasses extends Activity implements OnItemSelectedListener 
 		};
 
 		int[] to = {
-					android.R.id.text2
+					android.R.id.text1
 		};
 
 		@SuppressWarnings("deprecation") SimpleCursorAdapter attributeAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, attributeCursor, from, to);
@@ -146,31 +145,45 @@ public class MaintainClasses extends Activity implements OnItemSelectedListener 
 
 		List<String> classAttributes = new ArrayList<String>();
 
-		classAttributeCursor.moveToFirst();
+		Log.i(TAG, "Moving the cursor up to the beginning of the list...");
 
 		Long classAttributeClassID;
 		Long classAttributeAttributeID;
 
-		while (classAttributeCursor.moveToNext()) {
+		Log.i(TAG, "Beginning to spin through the classAttribute cursor...");
+
+		while (! classAttributeCursor.isAfterLast()) {
 			classAttributeClassID = classAttributeCursor.getLong(classAttributeCursor.getColumnIndex(LitterClassAttribute.column_ClassID));
 			classAttributeAttributeID = classAttributeCursor.getLong(classAttributeCursor.getColumnIndex(LitterClassAttribute.column_AttributeID));
 
-			if (classAttributeClassID != null) {
+			Log.i(TAG, "Try to grab the sub-class (" + classAttributeClassID + ")...");
+
+			if ((classAttributeClassID != null) && (classAttributeClassID != 0)) {
 				Cursor showClass = dbHelper.getClass(classAttributeClassID);
 
 				classAttributes.add("Class: " + showClass.getString(showClass.getColumnIndex(LitterClass.column_Description)));
 			}
 
-			if (classAttributeAttributeID != null) {
+			Log.i(TAG, "Try to grab the sub-attribute (" + classAttributeAttributeID + ")...");
+
+			if ((classAttributeAttributeID != null) && (classAttributeAttributeID != 0)) {
 				Cursor showAttribute = dbHelper.getAttribute(classAttributeAttributeID);
 
 				classAttributes.add("Attribute: " + showAttribute.getString(showAttribute.getColumnIndex(LitterAttribute.column_Description)));
 			}
+
+			classAttributeCursor.moveToNext();
 		}
+
+		Log.i(TAG, "Create the array adapter based on the array list...");
 
 		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, classAttributes);
 
+		Log.i(TAG, "Grab a reference to the listView...");
+
 		ListView listView = (ListView) findViewById(R.id.lstClassAttributes);
+
+		Log.i(TAG, "Connect the arrayAdapter to the listView...");
 
 		listView.setAdapter(arrayAdapter);
 	}
