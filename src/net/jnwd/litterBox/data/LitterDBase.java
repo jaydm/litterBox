@@ -13,7 +13,7 @@ public class LitterDBase {
 	private static final String TAG = "LitterDBase";
 
 	private static final String DATABASE_NAME = "LitterBox";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 3;
 
 	private final Context mContext;
 
@@ -196,19 +196,19 @@ public class LitterDBase {
 			long attributeID;
 
 			attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("Address1", "freeformText").addNew());
-			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 10, null, attributeID).addNew());
+			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 10, null, attributeID, "Address 1").addNew());
 
 			attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("Address2", "freeformText").addNew());
-			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 20, null, attributeID).addNew());
+			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 20, null, attributeID, "Address 2").addNew());
 
 			attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("Address3", "freeformText").addNew());
-			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 30, null, attributeID).addNew());
+			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 30, null, attributeID, "Address 3").addNew());
 
 			attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("City", "freeformText").addNew());
-			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 40, null, attributeID).addNew());
+			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 40, null, attributeID, "City").addNew());
 
 			attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("State", "enumText").addNew());
-			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 50, null, attributeID).addNew());
+			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 50, null, attributeID, "State").addNew());
 
 			mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(attributeID, 10, "AK").addNew());
 			mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(attributeID, 20, "AL").addNew());
@@ -222,21 +222,21 @@ public class LitterDBase {
 			mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(attributeID, 100, "NY").addNew());
 
 			attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("Zip", "freeformText").addNew());
-			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 60, null, attributeID).addNew());
+			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(addressClassID, 60, null, attributeID, "Zip Code").addNew());
 
 			// define person class
 			long personClassID = mDatabase.insert(LitterClass.table, null, new LitterClass("Person").addNew());
 
 			attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("FirstName", "freeformText").addNew());
-			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(personClassID, 10, null, attributeID).addNew());
+			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(personClassID, 10, null, attributeID, "First Name").addNew());
 
 			attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("MiddleInitial", "freeformText").addNew());
-			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(personClassID, 20, null, attributeID).addNew());
+			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(personClassID, 20, null, attributeID, "Initial").addNew());
 
 			attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("LastName", "freeformText").addNew());
-			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(personClassID, 30, null, attributeID).addNew());
+			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(personClassID, 30, null, attributeID, "Last Name").addNew());
 
-			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(personClassID, 40, addressClassID, null).addNew());
+			mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(personClassID, 40, addressClassID, null, "Home Address").addNew());
 
 			// generic attributes - Dates
 			attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("StartDate", "date").addNew());

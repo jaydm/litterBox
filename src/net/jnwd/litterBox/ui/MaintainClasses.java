@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
@@ -53,9 +54,11 @@ public class MaintainClasses extends Activity implements OnItemSelectedListener 
 
 				ListView listView = (ListView) findViewById(R.id.lstClassAttributes);
 
+				String labelText = ((EditText) findViewById(R.id.txtClassAttributeLabel)).getText().toString();
+
 				int count = listView.getCount();
 
-				LitterClassAttribute newClassAttribute = new LitterClassAttribute(classID, (count + 1) * 10, addClassID, null);
+				LitterClassAttribute newClassAttribute = new LitterClassAttribute(classID, (count + 1) * 10, addClassID, null, labelText);
 
 				dbHelper.insertClassAttribute(newClassAttribute);
 
@@ -76,9 +79,11 @@ public class MaintainClasses extends Activity implements OnItemSelectedListener 
 
 				ListView listView = (ListView) findViewById(R.id.lstClassAttributes);
 
+				String labelText = ((EditText) findViewById(R.id.txtClassAttributeLabel)).getText().toString();
+
 				int count = listView.getCount();
 
-				LitterClassAttribute newClassAttribute = new LitterClassAttribute(classID, (count + 1) * 10, null, addAttributeID);
+				LitterClassAttribute newClassAttribute = new LitterClassAttribute(classID, (count + 1) * 10, null, addAttributeID, labelText);
 
 				dbHelper.insertClassAttribute(newClassAttribute);
 
@@ -149,19 +154,21 @@ public class MaintainClasses extends Activity implements OnItemSelectedListener 
 
 		Long classAttributeClassID;
 		Long classAttributeAttributeID;
+		String labelText;
 
 		Log.i(TAG, "Beginning to spin through the classAttribute cursor...");
 
 		while (! classAttributeCursor.isAfterLast()) {
 			classAttributeClassID = classAttributeCursor.getLong(classAttributeCursor.getColumnIndex(LitterClassAttribute.column_ClassID));
 			classAttributeAttributeID = classAttributeCursor.getLong(classAttributeCursor.getColumnIndex(LitterClassAttribute.column_AttributeID));
+			labelText = classAttributeCursor.getString(classAttributeCursor.getColumnIndex(LitterClassAttribute.column_Label));
 
 			Log.i(TAG, "Try to grab the sub-class (" + classAttributeClassID + ")...");
 
 			if ((classAttributeClassID != null) && (classAttributeClassID != 0)) {
 				Cursor showClass = dbHelper.getClass(classAttributeClassID);
 
-				classAttributes.add("Class: " + showClass.getString(showClass.getColumnIndex(LitterClass.column_Description)));
+				classAttributes.add(labelText + " (c): " + showClass.getString(showClass.getColumnIndex(LitterClass.column_Description)));
 			}
 
 			Log.i(TAG, "Try to grab the sub-attribute (" + classAttributeAttributeID + ")...");
@@ -169,7 +176,7 @@ public class MaintainClasses extends Activity implements OnItemSelectedListener 
 			if ((classAttributeAttributeID != null) && (classAttributeAttributeID != 0)) {
 				Cursor showAttribute = dbHelper.getAttribute(classAttributeAttributeID);
 
-				classAttributes.add("Attribute: " + showAttribute.getString(showAttribute.getColumnIndex(LitterAttribute.column_Description)));
+				classAttributes.add(labelText + " (a): " + showAttribute.getString(showAttribute.getColumnIndex(LitterAttribute.column_Description)));
 			}
 
 			classAttributeCursor.moveToNext();

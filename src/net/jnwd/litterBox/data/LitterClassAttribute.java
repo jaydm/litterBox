@@ -10,6 +10,7 @@ public class LitterClassAttribute {
 	public static final String column_Sequence = "sequence";
 	public static final String column_ClassID = "classID";
 	public static final String column_AttributeID = "attributeID";
+	public static final String column_Label = "label";
 
 	public static final String[][] columns = {
 		{
@@ -26,6 +27,9 @@ public class LitterClassAttribute {
 		},
 		{
 			column_AttributeID, "integer"
+		},
+		{
+			column_Label, "text"
 		}
 	};
 
@@ -34,7 +38,8 @@ public class LitterClassAttribute {
 		column_ParentID,
 		column_Sequence,
 		column_ClassID,
-		column_AttributeID
+		column_AttributeID,
+		column_Label
 	};
 
 	public static final String showColumn = "description";
@@ -44,18 +49,20 @@ public class LitterClassAttribute {
 	private Long sequence;
 	private Long classID;
 	private Long attributeID;
+	private String label;
 
 	public LitterClassAttribute() {
 		super();
 	}
 
-	public LitterClassAttribute(Long parentID, long sequence, Long classID, Long attributeID) {
+	public LitterClassAttribute(Long parentID, long sequence, Long classID, Long attributeID, String label) {
 		this();
 
 		this.parentID = parentID;
 		this.sequence = sequence;
 		this.classID = classID;
 		this.attributeID = attributeID;
+		this.label = label;
 	}
 
 	public Long getId() {
@@ -98,6 +105,14 @@ public class LitterClassAttribute {
 		this.attributeID = attributeID;
 	}
 
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
 	public static String createCommand() {
 		String command = "Create table " + LitterClassAttribute.table + " (";
 
@@ -121,6 +136,7 @@ public class LitterClassAttribute {
 		initialValues.put(columns[2][0], sequence);
 		initialValues.put(columns[3][0], classID);
 		initialValues.put(columns[4][0], attributeID);
+		initialValues.put(columns[5][0], label);
 
 		return initialValues;
 	}
