@@ -9,4 +9,4 @@ There would also be an API to allow other apps to poke into these structures.
 
 Ambitious...but hopefully doable.
 
-First version will use SQLite. Some future version will extent out to have the data stored somewhere 'in the cloud' (or on a remove server of some kind).
+First version will use SQLite. Some future version will extent out to have the data stored somewhere 'in the cloud' (or on a remote server of some kind).
