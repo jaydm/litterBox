@@ -19,5 +19,8 @@
     <string name="add_new_attribute_value">Add New Attribute Value</string>
     <string name="add_new_class">Add Class to Class</string>
     <string name="add_new_attribute">Add Attribute to Class</string>
+    <string name="title_activity_add_attribute">Add Attribute</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_add_class">Add Class</string>
 
 </resources>

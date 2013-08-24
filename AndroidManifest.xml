@@ -34,6 +34,14 @@
             android:name="net.jnwd.litterBox.ui.MaintainAttributes"
             android:label="@string/title_activity_maintain_attributes" >
         </activity>
+        <activity
+            android:name="net.jnwd.litterBox.AddAttribute"
+            android:label="@string/title_activity_add_attribute" >
+        </activity>
+        <activity
+            android:name="net.jnwd.litterBox.AddClass"
+            android:label="@string/title_activity_add_class" >
+        </activity>
     </application>
 
 </manifest>
