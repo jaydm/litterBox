@@ -41,9 +41,21 @@ public class AddClass extends Activity {
 			public void onClick(View v) {
 				Log.i(TAG, "Adding a new class...");
 
+				Log.i(TAG, "Grabbing description...");
+
 				EditText newDescription = (EditText) findViewById(R.id.txtAddClassDescription);
 
-				dbHelper.insertClass(new LitterClass(newDescription.getText().toString()));
+				Log.i(TAG, "Creating new class: " + newDescription.getText());
+
+				LitterClass litterClass = new LitterClass(newDescription.getText().toString());
+
+				Log.i(TAG, "Class values: " + litterClass);
+
+				Log.i(TAG, "Attempt to insert the class...");
+
+				dbHelper.insertClass(litterClass);
+
+				Log.i(TAG, "Finished adding the class...");
 
 				newDescription.setText("");
 

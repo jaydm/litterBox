@@ -31,6 +31,14 @@ public class LitterClass {
 		super();
 	}
 
+	@Override
+	public String toString() {
+		return "" +
+			"Class: \n" +
+			"id -> " + id + "\n" +
+			"description -> " + description + "\n";
+	}
+
 	public LitterClass(String desc) {
 		this();
 
