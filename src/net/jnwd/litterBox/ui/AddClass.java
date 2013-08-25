@@ -25,14 +25,6 @@ public class AddClass extends Activity {
 
 		setContentView(R.layout.activity_add_class);
 
-		Spinner spinner = (Spinner) findViewById(R.id.spinAddClassType);
-
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.attribute_types, android.R.layout.simple_spinner_item);
-
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-		spinner.setAdapter(adapter);
-
 		Button saveClass = (Button) findViewById(R.id.btnAddClassSave);
 
 		saveClass.setOnClickListener(new OnClickListener() {
