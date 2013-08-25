@@ -3,12 +3,13 @@
 
     <string-array name="attribute_types">
         <item>Select one</item>
-        <item>Text Entry</item>
-        <item>Text (Select)</item>
+        <item>Freeform Text</item>
+        <item>Enumerated Text (list)</item>
         <item>Integer Entry</item>
         <item>Integer (Select)</item>
         <item>Decimal Entry</item>
         <item>Boolean (true/false)</item>
+        <item>Date</item>
     </string-array>
 
 </resources>

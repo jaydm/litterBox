@@ -1,18 +1,56 @@
 package net.jnwd.litterBox.ui;
 
 import net.jnwd.litterBox.R;
-import net.jnwd.litterBox.R.layout;
-import net.jnwd.litterBox.R.menu;
-import android.os.Bundle;
+import net.jnwd.litterBox.data.LitterClass;
+import net.jnwd.litterBox.data.LitterDBase;
 import android.app.Activity;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 public class AddClass extends Activity {
+	private final String TAG = "(AddClasses): ";
+
+	private LitterDBase dbHelper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.activity_add_class);
+
+		Spinner spinner = (Spinner) findViewById(R.id.spinAddClassType);
+
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.attribute_types, android.R.layout.simple_spinner_item);
+
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		spinner.setAdapter(adapter);
+
+		Button saveClass = (Button) findViewById(R.id.btnAddClassSave);
+
+		saveClass.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Log.i(TAG, "Adding a new class...");
+
+				EditText newDescription = (EditText) findViewById(R.id.txtAddClassDescription);
+
+				dbHelper.insertClass(new LitterClass(newDescription.getText().toString()));
+
+				newDescription.setText("");
+
+				Log.i(TAG, "Added...clear the description field...");
+			}
+
+		});
 	}
 
 	@Override

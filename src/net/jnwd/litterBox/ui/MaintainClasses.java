@@ -38,7 +38,7 @@ public class MaintainClasses extends Activity implements OnItemSelectedListener 
 		dbHelper = new LitterDBase(this);
 		dbHelper.open();
 
-		Button addClass = (Button) findViewById(R.id.btnAddClass);
+		Button addClass = (Button) findViewById(R.id.btnAddClassSave);
 		Button addAttribute = (Button) findViewById(R.id.btnAddAttribute);
 
 		addClass.setOnClickListener(new OnClickListener() {
