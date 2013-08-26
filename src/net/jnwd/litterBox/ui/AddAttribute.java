@@ -1,7 +1,6 @@
 package net.jnwd.litterBox.ui;
 
 import net.jnwd.litterBox.R;
-import net.jnwd.litterBox.data.LitterClass;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 
 public class AddAttribute extends Activity {
