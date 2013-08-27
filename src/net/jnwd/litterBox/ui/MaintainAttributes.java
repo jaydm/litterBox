@@ -5,10 +5,12 @@ import net.jnwd.litterBox.data.LitterAttribute;
 import net.jnwd.litterBox.data.LitterAttributeValue;
 import net.jnwd.litterBox.data.LitterDBase;
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -124,10 +126,24 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 	}
 
 	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.maAddAttribute:
+			Intent intent = new Intent(this, AddAttribute.class);
+
+			startActivity(intent);
+
+			return true;
+		default:
+			return true;
+		}
+	}
+
+	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 		if (parent.getId() != R.id.lstMaintainAttributeID) {
-			Log.i(TAG,"Ignore the item selected signal - wrong spinner...");
-			
+			Log.i(TAG, "Ignore the item selected signal - wrong spinner...");
+
 			return;
 		}
 
