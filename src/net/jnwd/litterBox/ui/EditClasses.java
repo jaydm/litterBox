@@ -4,17 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.jnwd.litterBox.R;
+import net.jnwd.litterBox.base.LitterBoxActivity;
 import net.jnwd.litterBox.data.LitterAttribute;
 import net.jnwd.litterBox.data.LitterClass;
 import net.jnwd.litterBox.data.LitterClassAttribute;
 import net.jnwd.litterBox.data.LitterDBase;
-import android.app.Activity;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -26,16 +23,16 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
-public class MaintainClasses extends Activity implements OnItemSelectedListener {
-	private final String TAG = "(Classes): ";
+public class EditClasses extends LitterBoxActivity implements
+		OnItemSelectedListener {
+	protected final String TAG = "Maintain Classes";
+	protected final int myLayout = R.layout.activity_maintain_classes;
 
 	private LitterDBase dbHelper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		setContentView(R.layout.activity_maintain_classes);
 
 		dbHelper = new LitterDBase(this);
 		dbHelper.open();
@@ -56,11 +53,13 @@ public class MaintainClasses extends Activity implements OnItemSelectedListener 
 
 				ListView listView = (ListView) findViewById(R.id.lstClassAttributes);
 
-				String labelText = ((EditText) findViewById(R.id.txtClassAttributeLabel)).getText().toString();
+				String labelText = ((EditText) findViewById(R.id.txtClassAttributeLabel))
+						.getText().toString();
 
 				int count = listView.getCount();
 
-				LitterClassAttribute newClassAttribute = new LitterClassAttribute(classID, (count + 1) * 10, addClassID, null, labelText);
+				LitterClassAttribute newClassAttribute = new LitterClassAttribute(
+						classID, (count + 1) * 10, addClassID, null, labelText);
 
 				dbHelper.insertClassAttribute(newClassAttribute);
 
@@ -81,11 +80,14 @@ public class MaintainClasses extends Activity implements OnItemSelectedListener 
 
 				ListView listView = (ListView) findViewById(R.id.lstClassAttributes);
 
-				String labelText = ((EditText) findViewById(R.id.txtClassAttributeLabel)).getText().toString();
+				String labelText = ((EditText) findViewById(R.id.txtClassAttributeLabel))
+						.getText().toString();
 
 				int count = listView.getCount();
 
-				LitterClassAttribute newClassAttribute = new LitterClassAttribute(classID, (count + 1) * 10, null, addAttributeID, labelText);
+				LitterClassAttribute newClassAttribute = new LitterClassAttribute(
+						classID, (count + 1) * 10, null, addAttributeID,
+						labelText);
 
 				dbHelper.insertClassAttribute(newClassAttribute);
 
@@ -105,15 +107,13 @@ public class MaintainClasses extends Activity implements OnItemSelectedListener 
 
 		Spinner addClasses = (Spinner) findViewById(R.id.lstClassAddClassID);
 
-		String[] from = {
-							LitterClass.showColumn
-		};
+		String[] from = { LitterClass.showColumn };
 
-		int[] to = {
-					android.R.id.text1
-		};
+		int[] to = { android.R.id.text1 };
 
-		@SuppressWarnings("deprecation") SimpleCursorAdapter classAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, classCursor, from, to);
+		@SuppressWarnings("deprecation")
+		SimpleCursorAdapter classAdapter = new SimpleCursorAdapter(this,
+				android.R.layout.simple_spinner_item, classCursor, from, to);
 
 		classes.setAdapter(classAdapter);
 		addClasses.setAdapter(classAdapter);
@@ -126,15 +126,13 @@ public class MaintainClasses extends Activity implements OnItemSelectedListener 
 
 		Spinner attributes = (Spinner) findViewById(R.id.lstClassAddAttributeID);
 
-		String[] from = {
-							LitterAttribute.showColumn
-		};
+		String[] from = { LitterAttribute.showColumn };
 
-		int[] to = {
-					android.R.id.text1
-		};
+		int[] to = { android.R.id.text1 };
 
-		@SuppressWarnings("deprecation") SimpleCursorAdapter attributeAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, attributeCursor, from, to);
+		@SuppressWarnings("deprecation")
+		SimpleCursorAdapter attributeAdapter = new SimpleCursorAdapter(this,
+				android.R.layout.simple_spinner_item, attributeCursor, from, to);
 
 		attributes.setAdapter(attributeAdapter);
 
@@ -160,25 +158,42 @@ public class MaintainClasses extends Activity implements OnItemSelectedListener 
 
 		Log.i(TAG, "Beginning to spin through the classAttribute cursor...");
 
-		while (! classAttributeCursor.isAfterLast()) {
-			classAttributeClassID = classAttributeCursor.getLong(classAttributeCursor.getColumnIndex(LitterClassAttribute.column_ClassID));
-			classAttributeAttributeID = classAttributeCursor.getLong(classAttributeCursor.getColumnIndex(LitterClassAttribute.column_AttributeID));
-			labelText = classAttributeCursor.getString(classAttributeCursor.getColumnIndex(LitterClassAttribute.column_Label));
+		while (!classAttributeCursor.isAfterLast()) {
+			classAttributeClassID = classAttributeCursor
+					.getLong(classAttributeCursor
+							.getColumnIndex(LitterClassAttribute.column_ClassID));
+			classAttributeAttributeID = classAttributeCursor
+					.getLong(classAttributeCursor
+							.getColumnIndex(LitterClassAttribute.column_AttributeID));
+			labelText = classAttributeCursor.getString(classAttributeCursor
+					.getColumnIndex(LitterClassAttribute.column_Label));
 
-			Log.i(TAG, "Try to grab the sub-class (" + classAttributeClassID + ")...");
+			Log.i(TAG, "Try to grab the sub-class (" + classAttributeClassID
+					+ ")...");
 
 			if ((classAttributeClassID != null) && (classAttributeClassID != 0)) {
 				Cursor showClass = dbHelper.getClass(classAttributeClassID);
 
-				classAttributes.add(labelText + " (c): " + showClass.getString(showClass.getColumnIndex(LitterClass.column_Description)));
+				classAttributes
+						.add(labelText
+								+ " (c): "
+								+ showClass.getString(showClass
+										.getColumnIndex(LitterClass.column_Description)));
 			}
 
-			Log.i(TAG, "Try to grab the sub-attribute (" + classAttributeAttributeID + ")...");
+			Log.i(TAG, "Try to grab the sub-attribute ("
+					+ classAttributeAttributeID + ")...");
 
-			if ((classAttributeAttributeID != null) && (classAttributeAttributeID != 0)) {
-				Cursor showAttribute = dbHelper.getAttribute(classAttributeAttributeID);
+			if ((classAttributeAttributeID != null)
+					&& (classAttributeAttributeID != 0)) {
+				Cursor showAttribute = dbHelper
+						.getAttribute(classAttributeAttributeID);
 
-				classAttributes.add(labelText + " (a): " + showAttribute.getString(showAttribute.getColumnIndex(LitterAttribute.column_Description)));
+				classAttributes
+						.add(labelText
+								+ " (a): "
+								+ showAttribute.getString(showAttribute
+										.getColumnIndex(LitterAttribute.column_Description)));
 			}
 
 			classAttributeCursor.moveToNext();
@@ -186,7 +201,8 @@ public class MaintainClasses extends Activity implements OnItemSelectedListener 
 
 		Log.i(TAG, "Create the array adapter based on the array list...");
 
-		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, classAttributes);
+		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_list_item_1, classAttributes);
 
 		Log.i(TAG, "Grab a reference to the listView...");
 
@@ -198,29 +214,8 @@ public class MaintainClasses extends Activity implements OnItemSelectedListener 
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.maintain_classes, menu);
-
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.mcAddClass:
-			Intent intent = new Intent(this, AddClass.class);
-
-			startActivity(intent);
-
-			return true;
-		default:
-			return true;
-		}
-	}
-
-	@Override
-	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+	public void onItemSelected(AdapterView<?> parent, View view, int position,
+			long id) {
 		if (parent.getId() != R.id.lstMaintainClassID) {
 			Log.i(TAG, "Ignore the item selected signal - wrong spinner...");
 

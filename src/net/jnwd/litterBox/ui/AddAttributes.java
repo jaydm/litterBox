@@ -1,28 +1,28 @@
 package net.jnwd.litterBox.ui;
 
 import net.jnwd.litterBox.R;
-import android.app.Activity;
+import net.jnwd.litterBox.base.LitterBoxActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
-public class AddAttribute extends Activity {
-	public final String TAG = "(AddAttribute)";
+public class AddAttributes extends LitterBoxActivity {
+	protected final String TAG = "Add Attributes";
+	protected final int myLayout = R.layout.activity_add_attribute;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_add_attribute);
-
 		Spinner spinner = (Spinner) findViewById(R.id.spinAddAttributeType);
 
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.attribute_types, android.R.layout.simple_spinner_item);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+				this, R.array.attribute_types,
+				android.R.layout.simple_spinner_item);
 
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -41,12 +41,4 @@ public class AddAttribute extends Activity {
 
 		});
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.add_attribute, menu);
-
-		return true;
-	}
-
 }

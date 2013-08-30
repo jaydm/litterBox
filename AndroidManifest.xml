@@ -5,8 +5,8 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="17" />
+        android:minSdkVersion="11"
+        android:targetSdkVersion="18" />
 
     <application
         android:allowBackup="true"
@@ -23,24 +23,52 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.jnwd.litterBox.ui.MaintainEntities"
+            android:name="net.jnwd.litterBox.ui.EditEntities"
             android:label="@string/title_activity_maintain_entities" >
         </activity>
         <activity
-            android:name="net.jnwd.litterBox.ui.MaintainClasses"
+            android:name="net.jnwd.litterBox.ui.EditClasses"
             android:label="@string/title_activity_maintain_classes" >
         </activity>
         <activity
-            android:name="net.jnwd.litterBox.ui.MaintainAttributes"
+            android:name="net.jnwd.litterBox.ui.EditAttributes"
             android:label="@string/title_activity_maintain_attributes" >
         </activity>
         <activity
-            android:name="net.jnwd.litterBox.ui.AddAttribute"
+            android:name="net.jnwd.litterBox.ui.AddAttributes"
             android:label="@string/title_activity_add_attribute" >
         </activity>
         <activity
-            android:name="net.jnwd.litterBox.ui.AddClass"
+            android:name="net.jnwd.litterBox.ui.AddClasses"
             android:label="@string/title_activity_add_class" >
+        </activity>
+        <activity
+            android:name="net.jnwd.litterBox.ui.ViewEntities"
+            android:label="@string/title_activity_view_entities" >
+        </activity>
+        <activity
+            android:name="net.jnwd.litterBox.ui.AddEntities"
+            android:label="@string/title_activity_add_entities"
+            android:parentActivityName="net.jnwd.litterBox.base.LitterBoxActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.jnwd.litterBox.base.LitterBoxActivity" />
+        </activity>
+        <activity
+            android:name="net.jnwd.litterBox.ui.ViewAttributes"
+            android:label="@string/title_activity_view_attributes"
+            android:parentActivityName="LitterBoxActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="LitterBoxActivity" />
+        </activity>
+        <activity
+            android:name="net.jnwd.litterBox.ui.ViewClasses"
+            android:label="@string/title_activity_view_classes"
+            android:parentActivityName="LitterBoxActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="LitterBoxActivity" />
         </activity>
     </application>
 

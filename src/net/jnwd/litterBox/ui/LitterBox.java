@@ -13,11 +13,8 @@ import android.widget.ListView;
 public class LitterBox extends ListActivity {
 	final private String TAG = "LitterBox";
 
-	final private String[] menuChoices = {
-		"Maintain Entities",
-		"Maintain Classes",
-		"Maintain Attributes"
-	};
+	final private String[] menuChoices = { "Maintain Entities",
+			"Maintain Classes", "Maintain Attributes" };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +22,8 @@ public class LitterBox extends ListActivity {
 
 		setContentView(R.layout.activity_litter_box);
 
-		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, menuChoices));
+		setListAdapter(new ArrayAdapter<String>(this,
+				android.R.layout.simple_list_item_1, menuChoices));
 	}
 
 	@Override
@@ -34,19 +32,19 @@ public class LitterBox extends ListActivity {
 		case 0: // maintain entities
 			Log.i(TAG, "Starting the maintain entities screen...");
 
-			startActivity(new Intent(this, MaintainEntities.class));
+			startActivity(new Intent(this, EditEntities.class));
 
 			break;
 		case 1: // maintain classes
 			Log.i(TAG, "Starting the maintain classes screen...");
 
-			startActivity(new Intent(this, MaintainClasses.class));
+			startActivity(new Intent(this, EditClasses.class));
 
 			break;
 		case 2: // maintain attributes
 			Log.i(TAG, "Starting the maintain attributes screen...");
 
-			startActivity(new Intent(this, MaintainAttributes.class));
+			startActivity(new Intent(this, EditAttributes.class));
 
 			break;
 		default:

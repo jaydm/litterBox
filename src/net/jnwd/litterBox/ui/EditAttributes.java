@@ -1,16 +1,13 @@
 package net.jnwd.litterBox.ui;
 
 import net.jnwd.litterBox.R;
+import net.jnwd.litterBox.base.LitterBoxActivity;
 import net.jnwd.litterBox.data.LitterAttribute;
 import net.jnwd.litterBox.data.LitterAttributeValue;
 import net.jnwd.litterBox.data.LitterDBase;
-import android.app.Activity;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -22,18 +19,18 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class MaintainAttributes extends Activity implements OnItemSelectedListener {
-	private final String TAG = "Maintain Attributes";
+public class EditAttributes extends LitterBoxActivity implements
+		OnItemSelectedListener {
+	protected final String TAG = "Maintain Attributes";
+	protected final int myLayout = R.layout.activity_maintain_attributes;
 
 	private LitterDBase dbHelper;
 
-	private long selectedAttribute = - 1;
+	private long selectedAttribute = -1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		setContentView(R.layout.activity_maintain_attributes);
 
 		Log.i(TAG, "Get database connection...");
 
@@ -50,7 +47,9 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 
 				int count = listView.getCount();
 
-				LitterAttributeValue newValue = new LitterAttributeValue(selectedAttribute, (count + 1) * 10, addValue.getText().toString());
+				LitterAttributeValue newValue = new LitterAttributeValue(
+						selectedAttribute, (count + 1) * 10, addValue.getText()
+								.toString());
 
 				dbHelper.insertAttributeValue(newValue);
 
@@ -72,19 +71,18 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 
 		Cursor attributeCursor = dbHelper.getAttributeList();
 
-		Log.i(TAG, "Create from and to references to connect the cursor to the spinner...");
+		Log.i(TAG,
+				"Create from and to references to connect the cursor to the spinner...");
 
-		String[] from = {
-							LitterAttribute.showColumn
-		};
+		String[] from = { LitterAttribute.showColumn };
 
-		int[] to = {
-					android.R.id.text1
-		};
+		int[] to = { android.R.id.text1 };
 
 		Log.i(TAG, "Create the cursor adapter...");
 
-		@SuppressWarnings("deprecation") SimpleCursorAdapter attributeAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, attributeCursor, from, to);
+		@SuppressWarnings("deprecation")
+		SimpleCursorAdapter attributeAdapter = new SimpleCursorAdapter(this,
+				android.R.layout.simple_spinner_item, attributeCursor, from, to);
 
 		Log.i(TAG, "Connect adapter to the spinner...");
 
@@ -98,19 +96,18 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 
 		Cursor valueCursor = dbHelper.getAttributeValues(attributeID);
 
-		Log.i(TAG, "Got the cursor? " + (valueCursor == null ? "Null!?!?!?" : "Cursor Okay!"));
+		Log.i(TAG, "Got the cursor? "
+				+ (valueCursor == null ? "Null!?!?!?" : "Cursor Okay!"));
 
-		String[] from = {
-							LitterAttributeValue.showColumn
-		};
+		String[] from = { LitterAttributeValue.showColumn };
 
-		int[] to = {
-					android.R.id.text1
-		};
+		int[] to = { android.R.id.text1 };
 
 		Log.i(TAG, "Create the cursor adapter...");
 
-		@SuppressWarnings("deprecation") SimpleCursorAdapter valueAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, valueCursor, from, to);
+		@SuppressWarnings("deprecation")
+		SimpleCursorAdapter valueAdapter = new SimpleCursorAdapter(this,
+				android.R.layout.simple_list_item_1, valueCursor, from, to);
 
 		ListView listView = (ListView) findViewById(R.id.lstAttributeValues);
 
@@ -118,29 +115,8 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.maintain_attributes, menu);
-
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.maAddAttribute:
-			Intent intent = new Intent(this, AddAttribute.class);
-
-			startActivity(intent);
-
-			return true;
-		default:
-			return true;
-		}
-	}
-
-	@Override
-	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+	public void onItemSelected(AdapterView<?> parent, View view, int position,
+			long id) {
 		if (parent.getId() != R.id.lstMaintainAttributeID) {
 			Log.i(TAG, "Ignore the item selected signal - wrong spinner...");
 
@@ -159,7 +135,8 @@ public class MaintainAttributes extends Activity implements OnItemSelectedListen
 			return;
 		}
 
-		String type = attribute.getString(attribute.getColumnIndex(LitterAttribute.column_Type));
+		String type = attribute.getString(attribute
+				.getColumnIndex(LitterAttribute.column_Type));
 
 		Log.i(TAG, "Got type: " + type);
 

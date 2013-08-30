@@ -22,5 +22,20 @@
     <string name="title_activity_add_attribute">Add Attribute</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_add_class">Add Class</string>
+    <string name="action_view_entities">View/Search Entities</string>
+    <string name="action_view_classes">View/Search Classes</string>
+    <string name="action_view_attributes">View/Search Attributes</string>
+    <string name="action_edit_entities">Edit Entities</string>
+    <string name="action_edit_classes">Edit Classes</string>
+    <string name="action_edit_attributes">Edit Attributes</string>
+    <string name="action_add_entities">Add Entities</string>
+    <string name="action_add_classes">Add Classes</string>
+    <string name="action_add_attributes">Add Attributes</string>
+    <string name="summaryUserName">User Name</string>
+    <string name="titleUserName">User Name</string>
+    <string name="title_activity_view_entities">ViewEntities</string>
+    <string name="title_activity_add_entities">AddEntities</string>
+    <string name="title_activity_view_attributes">ViewAttributes</string>
+    <string name="title_activity_view_classes">ViewClasses</string>
 
 </resources>
