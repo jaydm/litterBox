@@ -31,7 +31,7 @@
             android:label="@string/title_activity_maintain_classes" >
         </activity>
         <activity
-            android:name="net.jnwd.litterBox.ui.EditAttributes"
+            android:name="net.jnwd.litterBox.ui.MaintainAttributes"
             android:label="@string/title_activity_maintain_attributes" >
         </activity>
         <activity

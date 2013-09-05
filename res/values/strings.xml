@@ -37,5 +37,14 @@
     <string name="title_activity_add_entities">AddEntities</string>
     <string name="title_activity_view_attributes">ViewAttributes</string>
     <string name="title_activity_view_classes">ViewClasses</string>
+    
+    <string name="ma_attribute_id_label">Attribute:</string>
+    <string name="ma_attribute_desc_hint">Enter an attribute description</string>
+    <string name="ma_attribute_desc_label">Desc:</string>
+    <string name="ma_attribute_type_label">Type:</string>
+    <string name="ma_attribute_value_label">Value:</string>
+    <string name="ma_button_add_label">Add</string>
+    <string name="ma_button_update_label">Update</string>
+    <string name="ma_button_remove_label">Remove</string>
 
 </resources>

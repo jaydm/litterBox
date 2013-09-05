@@ -1,7 +1,6 @@
 package net.jnwd.litterBox.ui;
 
 import net.jnwd.litterBox.R;
-import net.jnwd.litterBox.base.LitterBoxActivity;
 import net.jnwd.litterBox.data.LitterAttribute;
 import net.jnwd.litterBox.data.LitterAttributeValue;
 import net.jnwd.litterBox.data.LitterDBase;
@@ -19,7 +18,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class EditAttributes extends LitterBoxActivity implements
+public class MaintainAttributes extends LitterBoxTabActivity implements
 		OnItemSelectedListener {
 	protected final String TAG = "Maintain Attributes";
 	protected final int myLayout = R.layout.activity_maintain_attributes;

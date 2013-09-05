@@ -44,7 +44,7 @@ public class LitterBox extends ListActivity {
 		case 2: // maintain attributes
 			Log.i(TAG, "Starting the maintain attributes screen...");
 
-			startActivity(new Intent(this, EditAttributes.class));
+			startActivity(new Intent(this, MaintainAttributes.class));
 
 			break;
 		default:

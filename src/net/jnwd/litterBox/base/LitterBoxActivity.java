@@ -4,7 +4,7 @@ import net.jnwd.litterBox.R;
 import net.jnwd.litterBox.ui.AddAttributes;
 import net.jnwd.litterBox.ui.AddClasses;
 import net.jnwd.litterBox.ui.AddEntities;
-import net.jnwd.litterBox.ui.EditAttributes;
+import net.jnwd.litterBox.ui.MaintainAttributes;
 import net.jnwd.litterBox.ui.EditClasses;
 import net.jnwd.litterBox.ui.EditEntities;
 import net.jnwd.litterBox.ui.ViewAttributes;
@@ -77,7 +77,7 @@ public class LitterBoxActivity extends Activity {
 
 			return true;
 		case R.id.action_edit_attributes:
-			intent = new Intent(this, EditAttributes.class);
+			intent = new Intent(this, MaintainAttributes.class);
 
 			startActivity(intent);
 
