@@ -2,23 +2,34 @@
 package net.jnwd.litterBox.ui;
 
 import net.jnwd.litterBox.R;
-import net.jnwd.litterBox.base.LitterBoxActivity;
 import net.jnwd.litterBox.data.LitterAttribute;
 import net.jnwd.litterBox.data.LitterAttributeValue;
 import net.jnwd.litterBox.data.LitterDBase;
+import android.app.ActionBar;
+import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-public class MaintainAttributes extends LitterBoxActivity implements OnItemSelectedListener {
+public class MaintainAttributes extends FragmentActivity implements ActionBar.TabListener,
+        OnItemSelectedListener {
+    AttributePagerAdapter attributePager;
+
+    ViewPager mViewPager;
+
     protected final String TAG = "Maintain Attributes";
     protected final int myLayout = R.layout.activity_maintain_attributes;
 
@@ -26,9 +37,38 @@ public class MaintainAttributes extends LitterBoxActivity implements OnItemSelec
 
     private long selectedAttribute = -1;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_maintain_attributes);
+
+        attributePager = new AttributePagerAdapter(getSupportFragmentManager());
+
+        final ActionBar actionBar = getActionBar();
+
+        actionBar.setHomeButtonEnabled(false);
+
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(attributePager);
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                actionBar.setSelectedNavigationItem(position);
+            }
+        });
+
+        for (int i = 0; i < attributePager.getCount(); i++) {
+            // Create a tab with text corresponding to the page title defined by
+            // the adapter.
+            // Also specify this Activity object, which implements the
+            // TabListener interface, as the
+            // listener for when this tab is selected.
+            actionBar.addTab(
+                    actionBar.newTab()
+                            .setText(attributePager.getPageTitle(i))
+                            .setTabListener(this));
+        }
 
         Log.i(TAG, "Get database connection...");
 
@@ -36,6 +76,78 @@ public class MaintainAttributes extends LitterBoxActivity implements OnItemSelec
         dbHelper.open();
 
         fillAttributes();
+    }
+
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    }
+
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        // When the given tab is selected, switch to the corresponding page in
+        // the ViewPager.
+        mViewPager.setCurrentItem(tab.getPosition());
+    }
+
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    }
+
+    public static class AttributePagerAdapter extends FragmentPagerAdapter {
+        private final int pageCount = 2;
+        private final String[] pageTitle = {
+                "Attributes",
+                "Values"
+        };
+
+        public AttributePagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int i) {
+            switch (i) {
+                case 0:
+                    return new AttributeFragment();
+                default:
+                    return new ValueFragment();
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return pageCount;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return pageTitle[position];
+        }
+    }
+
+    /**
+     * A fragment that launches other parts of the demo application.
+     */
+    public static class AttributeFragment extends Fragment {
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.maintain_attribute_tab1, container, false);
+
+            return rootView;
+        }
+    }
+
+    public static class ValueFragment extends Fragment {
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.maintain_attribute_tab2, container, false);
+
+            return rootView;
+        }
     }
 
     private void fillAttributes() {
