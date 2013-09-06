@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/maTextView1_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/ma_attribute_id_label" />
+
+    <Spinner
+        android:id="@+id/maAttributeID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="54dp"
+        android:layout_toRightOf="@+id/maTextView1_1" />
+
+    <TextView
+        android:id="@+id/maTextView1_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/maTextView1_1"
+        android:layout_below="@+id/maAttributeID"
+        android:text="@string/ma_attribute_desc_label" />
+
+    <EditText
+        android:id="@+id/maAttributeDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/maAttributeID"
+        android:layout_alignTop="@+id/maTextView1_2"
+        android:ems="10"
+        android:hint="@string/ma_attribute_desc_hint" >
+
+        <requestFocus />
+    </EditText>
+
+    <TextView
+        android:id="@+id/maTextView1_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/maAttributeDesc"
+        android:layout_toLeftOf="@+id/maAttributeID"
+        android:text="@string/ma_attribute_type_label" />
+
+    <Spinner
+        android:id="@+id/maAttributeType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/maAttributeDesc"
+        android:layout_alignTop="@+id/maTextView1_3" />
+
+    <Button
+        android:id="@+id/maTab1Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/maAttributeType"
+        android:text="@string/ma_button_add_label" />
+
+</RelativeLayout>
