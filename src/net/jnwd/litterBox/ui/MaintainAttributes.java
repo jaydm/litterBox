@@ -1,6 +1,8 @@
+
 package net.jnwd.litterBox.ui;
 
 import net.jnwd.litterBox.R;
+import net.jnwd.litterBox.base.LitterBoxActivity;
 import net.jnwd.litterBox.data.LitterAttribute;
 import net.jnwd.litterBox.data.LitterAttributeValue;
 import net.jnwd.litterBox.data.LitterDBase;
@@ -8,154 +10,108 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class MaintainAttributes extends LitterBoxTabActivity implements
-		OnItemSelectedListener {
-	protected final String TAG = "Maintain Attributes";
-	protected final int myLayout = R.layout.activity_maintain_attributes;
+public class MaintainAttributes extends LitterBoxActivity implements OnItemSelectedListener {
+    protected final String TAG = "Maintain Attributes";
+    protected final int myLayout = R.layout.activity_maintain_attributes;
 
-	private LitterDBase dbHelper;
+    private LitterDBase dbHelper;
 
-	private long selectedAttribute = -1;
+    private long selectedAttribute = -1;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		Log.i(TAG, "Get database connection...");
+        Log.i(TAG, "Get database connection...");
 
-		dbHelper = new LitterDBase(this);
-		dbHelper.open();
+        dbHelper = new LitterDBase(this);
+        dbHelper.open();
 
-		Button addValue = (Button) findViewById(R.id.btnAddAttributeValue);
+        fillAttributes();
+    }
 
-		addValue.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				EditText addValue = (EditText) findViewById(R.id.newAttributeValue);
-				ListView listView = (ListView) findViewById(R.id.lstAttributeValues);
+    private void fillAttributes() {
+        Log.i(TAG, "Create reference to attribute spinner...");
 
-				int count = listView.getCount();
+        Log.i(TAG, "Create a cursor of all attributes...");
 
-				LitterAttributeValue newValue = new LitterAttributeValue(
-						selectedAttribute, (count + 1) * 10, addValue.getText()
-								.toString());
+        Cursor attributeCursor = dbHelper.getAttributeList();
 
-				dbHelper.insertAttributeValue(newValue);
+        Log.i(TAG,
+                "Create from and to references to connect the cursor to the spinner...");
 
-				addValue.setText(null);
+        String[] from = {
+                LitterAttribute.showColumn
+        };
 
-				fillValues(selectedAttribute);
-			}
-		});
+        int[] to = {
+                android.R.id.text1
+        };
 
-		fillAttributes();
-	}
+        Log.i(TAG, "Create the cursor adapter...");
 
-	private void fillAttributes() {
-		Log.i(TAG, "Create reference to attribute spinner...");
+        @SuppressWarnings("deprecation")
+        SimpleCursorAdapter attributeAdapter = new SimpleCursorAdapter(this,
+                android.R.layout.simple_spinner_item, attributeCursor, from, to);
 
-		Spinner attributes = (Spinner) findViewById(R.id.lstMaintainAttributeID);
+        Log.i(TAG, "Connect adapter to the spinner...");
+    }
 
-		Log.i(TAG, "Create a cursor of all attributes...");
+    private void fillValues(long attributeID) {
+        Log.i(TAG, "Loading the stored values for the attribute...");
 
-		Cursor attributeCursor = dbHelper.getAttributeList();
+        Cursor valueCursor = dbHelper.getAttributeValues(attributeID);
 
-		Log.i(TAG,
-				"Create from and to references to connect the cursor to the spinner...");
+        Log.i(TAG, "Got the cursor? "
+                + (valueCursor == null ? "Null!?!?!?" : "Cursor Okay!"));
 
-		String[] from = { LitterAttribute.showColumn };
+        String[] from = {
+                LitterAttributeValue.showColumn
+        };
 
-		int[] to = { android.R.id.text1 };
+        int[] to = {
+                android.R.id.text1
+        };
 
-		Log.i(TAG, "Create the cursor adapter...");
+        Log.i(TAG, "Create the cursor adapter...");
 
-		@SuppressWarnings("deprecation")
-		SimpleCursorAdapter attributeAdapter = new SimpleCursorAdapter(this,
-				android.R.layout.simple_spinner_item, attributeCursor, from, to);
+        @SuppressWarnings("deprecation")
+        SimpleCursorAdapter valueAdapter = new SimpleCursorAdapter(this,
+                android.R.layout.simple_list_item_1, valueCursor, from, to);
+    }
 
-		Log.i(TAG, "Connect adapter to the spinner...");
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        selectedAttribute = id;
 
-		attributes.setAdapter(attributeAdapter);
+        Log.i(TAG, "Get the selected attribute row: " + id);
 
-		attributes.setOnItemSelectedListener(this);
-	}
+        Cursor attribute = dbHelper.getAttribute(id);
 
-	private void fillValues(long attributeID) {
-		Log.i(TAG, "Loading the stored values for the attribute...");
+        if (attribute == null) {
+            Log.i(TAG, "The cursor is null!!!");
 
-		Cursor valueCursor = dbHelper.getAttributeValues(attributeID);
+            return;
+        }
 
-		Log.i(TAG, "Got the cursor? "
-				+ (valueCursor == null ? "Null!?!?!?" : "Cursor Okay!"));
+        String type = attribute.getString(attribute
+                .getColumnIndex(LitterAttribute.column_Type));
 
-		String[] from = { LitterAttributeValue.showColumn };
+        Log.i(TAG, "Got type: " + type);
 
-		int[] to = { android.R.id.text1 };
+        fillValues(id);
+    }
 
-		Log.i(TAG, "Create the cursor adapter...");
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
 
-		@SuppressWarnings("deprecation")
-		SimpleCursorAdapter valueAdapter = new SimpleCursorAdapter(this,
-				android.R.layout.simple_list_item_1, valueCursor, from, to);
-
-		ListView listView = (ListView) findViewById(R.id.lstAttributeValues);
-
-		listView.setAdapter(valueAdapter);
-	}
-
-	@Override
-	public void onItemSelected(AdapterView<?> parent, View view, int position,
-			long id) {
-		if (parent.getId() != R.id.lstMaintainAttributeID) {
-			Log.i(TAG, "Ignore the item selected signal - wrong spinner...");
-
-			return;
-		}
-
-		selectedAttribute = id;
-
-		Log.i(TAG, "Get the selected attribute row: " + id);
-
-		Cursor attribute = dbHelper.getAttribute(id);
-
-		if (attribute == null) {
-			Log.i(TAG, "The cursor is null!!!");
-
-			return;
-		}
-
-		String type = attribute.getString(attribute
-				.getColumnIndex(LitterAttribute.column_Type));
-
-		Log.i(TAG, "Got type: " + type);
-
-		EditText addValue = (EditText) findViewById(R.id.newAttributeValue);
-
-		addValue.setEnabled(false);
-
-		if (type.startsWith("enum")) {
-			addValue.setEnabled(true);
-		}
-
-		TextView attributeType = (TextView) findViewById(R.id.txtMaintainAttributeType);
-
-		attributeType.setText("Type: " + type.toString());
-
-		fillValues(id);
-	}
-
-	@Override
-	public void onNothingSelected(AdapterView<?> arg0) {
-
-	}
+    }
 }

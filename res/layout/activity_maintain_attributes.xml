@@ -10,7 +10,7 @@
     tools:context=".MaintainAttributes" >
 
     <TabHost
-        android:id="@android:id/maTabhost"
+        android:id="@android:id/tabhost"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
@@ -20,13 +20,13 @@
             android:orientation="vertical" >
 
             <TabWidget
-                android:id="@android:id/maTabs"
+                android:id="@android:id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
             </TabWidget>
 
             <FrameLayout
-                android:id="@android:id/maTabcontent"
+                android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" >
 
