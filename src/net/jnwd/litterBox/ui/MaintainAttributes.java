@@ -6,8 +6,8 @@ import net.jnwd.litterBox.data.LitterAttribute;
 import net.jnwd.litterBox.data.LitterAttributeValue;
 import net.jnwd.litterBox.data.LitterDBase;
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,27 +18,46 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
-public class MaintainAttributes extends FragmentActivity implements ActionBar.TabListener,
-        OnItemSelectedListener {
-    AttributePagerAdapter attributePager;
+public class MaintainAttributes extends FragmentActivity implements ActionBar.TabListener {
+    private AttributePagerAdapter attributePager;
 
-    ViewPager mViewPager;
+    private ViewPager mViewPager;
 
     protected final String TAG = "Maintain Attributes";
     protected final int myLayout = R.layout.activity_maintain_attributes;
 
-    private LitterDBase dbHelper;
+    public LitterDBase dbHelper;
 
-    private long selectedAttribute = -1;
+    private long selectedAttributeID;
+
+    public LitterDBase getDbHelper() {
+        return dbHelper;
+    }
+
+    public long getSelectedAttributeID() {
+        return selectedAttributeID;
+    }
+
+    public void setSelectedAttributeID(long id) {
+        selectedAttributeID = id;
+    }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        dbHelper = new LitterDBase(this);
+        dbHelper.open();
+
         setContentView(R.layout.activity_maintain_attributes);
 
         attributePager = new AttributePagerAdapter(getSupportFragmentManager());
@@ -59,38 +78,26 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
         });
 
         for (int i = 0; i < attributePager.getCount(); i++) {
-            // Create a tab with text corresponding to the page title defined by
-            // the adapter.
-            // Also specify this Activity object, which implements the
-            // TabListener interface, as the
-            // listener for when this tab is selected.
             actionBar.addTab(
                     actionBar.newTab()
                             .setText(attributePager.getPageTitle(i))
                             .setTabListener(this));
         }
-
-        Log.i(TAG, "Get database connection...");
-
-        dbHelper = new LitterDBase(this);
-        dbHelper.open();
-
-        fillAttributes();
     }
 
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+
     }
 
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        // When the given tab is selected, switch to the corresponding page in
-        // the ViewPager.
         mViewPager.setCurrentItem(tab.getPosition());
     }
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+
     }
 
     public static class AttributePagerAdapter extends FragmentPagerAdapter {
@@ -106,11 +113,17 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
 
         @Override
         public Fragment getItem(int i) {
+            Fragment page;
+
             switch (i) {
                 case 0:
-                    return new AttributeFragment();
+                    page = new AttributeFragment();
+
+                    return page;
                 default:
-                    return new ValueFragment();
+                    page = new ValueFragment();
+
+                    return page;
             }
         }
 
@@ -128,18 +141,116 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
     /**
      * A fragment that launches other parts of the demo application.
      */
-    public static class AttributeFragment extends Fragment {
+    public static class AttributeFragment extends Fragment implements OnItemSelectedListener {
+        private final String TAG = "maAttribute";
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.maintain_attribute_tab1, container, false);
 
+            Spinner attributeType = (Spinner) rootView.findViewById(R.id.maAttributeType);
+
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                    getActivity(), R.array.attribute_types,
+                    android.R.layout.simple_spinner_item);
+
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            attributeType.setAdapter(adapter);
+
+            Button saveAttribute = (Button) rootView.findViewById(R.id.maButton1);
+
+            saveAttribute.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    Log.i(TAG, "Adding a new attribute...");
+
+                    Log.i(TAG, "Added...clear the description field...");
+                }
+
+            });
+
+            fillAttributes(rootView);
+
             return rootView;
+        }
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            MaintainAttributes activity = ((MaintainAttributes) getActivity());
+
+            activity.setSelectedAttributeID(id);
+
+            Cursor currentAttribute = activity.getDbHelper()
+                    .getAttribute(id);
+
+            TextView showType = (TextView) getActivity().findViewById(R.id.maAttributeTypeLabel);
+
+            String label = getActivity().getResources().getString(R.string.ma_attribute_type_label);
+
+            showType.setText(label + " (currently: " + currentAttribute.getString(currentAttribute
+                    .getColumnIndex(LitterAttribute.column_Type)) + ")");
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> arg0) {
+
+        }
+
+        private void fillAttributes(View view) {
+            MaintainAttributes activity = ((MaintainAttributes) getActivity());
+
+            Log.i(TAG, "Create reference to attribute spinner...");
+
+            Spinner attributeID = (Spinner) view.findViewById(R.id.maAttributeID);
+
+            Log.i(TAG, "Spinner is " + (attributeID == null ? "null" : "not null"));
+
+            Log.i(TAG, "Create a cursor of all attributes...");
+
+            Cursor attributeCursor = activity.getDbHelper().getAttributeList();
+
+            Log.i(TAG, "Cursor is " + (attributeCursor == null ? "null" : "not null"));
+
+            Log.i(TAG,
+                    "Create from and to references to connect the cursor to the spinner...");
+
+            String[] from = {
+                    LitterAttribute.showColumn
+            };
+
+            int[] to = {
+                    android.R.id.text1
+            };
+
+            Log.i(TAG, "Create the cursor adapter...");
+
+            @SuppressWarnings("deprecation")
+            SimpleCursorAdapter attributeAdapter = new SimpleCursorAdapter(getActivity(),
+                    android.R.layout.simple_spinner_item, attributeCursor, from, to);
+
+            Log.i(TAG, "Connect adapter to the spinner...");
+
+            attributeID.setAdapter(attributeAdapter);
+
+            attributeID.setOnItemSelectedListener(this);
         }
     }
 
     public static class ValueFragment extends Fragment {
+        private final String TAG = "maValue";
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -148,82 +259,30 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
 
             return rootView;
         }
-    }
 
-    private void fillAttributes() {
-        Log.i(TAG, "Create reference to attribute spinner...");
+        private void fillValues(long attributeID) {
+            MaintainAttributes activity = ((MaintainAttributes) getActivity());
 
-        Log.i(TAG, "Create a cursor of all attributes...");
+            Log.i(TAG, "Loading the stored values for the attribute...");
 
-        Cursor attributeCursor = dbHelper.getAttributeList();
+            Cursor valueCursor = activity.dbHelper.getAttributeValues(attributeID);
 
-        Log.i(TAG,
-                "Create from and to references to connect the cursor to the spinner...");
+            Log.i(TAG, "Got the cursor? "
+                    + (valueCursor == null ? "Null!?!?!?" : "Cursor Okay!"));
 
-        String[] from = {
-                LitterAttribute.showColumn
-        };
+            String[] from = {
+                    LitterAttributeValue.showColumn
+            };
 
-        int[] to = {
-                android.R.id.text1
-        };
+            int[] to = {
+                    android.R.id.text1
+            };
 
-        Log.i(TAG, "Create the cursor adapter...");
+            Log.i(TAG, "Create the cursor adapter...");
 
-        @SuppressWarnings("deprecation")
-        SimpleCursorAdapter attributeAdapter = new SimpleCursorAdapter(this,
-                android.R.layout.simple_spinner_item, attributeCursor, from, to);
-
-        Log.i(TAG, "Connect adapter to the spinner...");
-    }
-
-    private void fillValues(long attributeID) {
-        Log.i(TAG, "Loading the stored values for the attribute...");
-
-        Cursor valueCursor = dbHelper.getAttributeValues(attributeID);
-
-        Log.i(TAG, "Got the cursor? "
-                + (valueCursor == null ? "Null!?!?!?" : "Cursor Okay!"));
-
-        String[] from = {
-                LitterAttributeValue.showColumn
-        };
-
-        int[] to = {
-                android.R.id.text1
-        };
-
-        Log.i(TAG, "Create the cursor adapter...");
-
-        @SuppressWarnings("deprecation")
-        SimpleCursorAdapter valueAdapter = new SimpleCursorAdapter(this,
-                android.R.layout.simple_list_item_1, valueCursor, from, to);
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        selectedAttribute = id;
-
-        Log.i(TAG, "Get the selected attribute row: " + id);
-
-        Cursor attribute = dbHelper.getAttribute(id);
-
-        if (attribute == null) {
-            Log.i(TAG, "The cursor is null!!!");
-
-            return;
+            @SuppressWarnings("deprecation")
+            SimpleCursorAdapter valueAdapter = new SimpleCursorAdapter(getActivity(),
+                    android.R.layout.simple_list_item_1, valueCursor, from, to);
         }
-
-        String type = attribute.getString(attribute
-                .getColumnIndex(LitterAttribute.column_Type));
-
-        Log.i(TAG, "Got type: " + type);
-
-        fillValues(id);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> arg0) {
-
     }
 }
