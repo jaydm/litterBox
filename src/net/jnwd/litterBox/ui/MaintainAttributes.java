@@ -24,6 +24,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -257,27 +259,45 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.maintain_attribute_tab2, container, false);
 
+            fillValues();
+
             return rootView;
         }
 
         private void fillValues() {
             MaintainAttributes activity = ((MaintainAttributes) getActivity());
 
+            ListView values = (ListView) activity.findViewById(R.id.maAttributeValues);
+
             Log.i(TAG, "Loading the stored values for the attribute...");
 
-			long attributeID = activity.getSelectedAttributeID();
-			
-			Cursor attributeCursor = activity.getDbHelper().getAttribute(attributeID);
-			
-			String attributeDescription = attributeCursor.getString(attributeCursor.getColumnIndex(LitterAttribute.column_Description));
-			
-			TextView description = (TextView) activity.findViewById(R.id.maAttributeDescShow);
-			
-			description.setText(attributeDescription);
-			
+            long attributeID = activity.getSelectedAttributeID();
+
+            Cursor attributeCursor = activity.getDbHelper().getAttribute(attributeID);
+
+            String attributeDescription = attributeCursor.getString(attributeCursor
+                    .getColumnIndex(LitterAttribute.column_Description));
+
+            Log.i(TAG, "Setting display value of attribute name to: " + attributeDescription);
+
+            boolean isEnumerated = attributeCursor.getString(
+                    attributeCursor.getColumnIndex(LitterAttribute.column_Type)).startsWith("enum");
+
+            EditText addValue = (EditText) activity.findViewById(R.id.maAttributeAddValue);
+
+            addValue.setEnabled(false);
+
+            if (isEnumerated) {
+                addValue.setEnabled(true);
+            }
+
+            TextView description = (TextView) activity.findViewById(R.id.maAttributeDescShow);
+
+            description.setText(attributeDescription);
+
             Cursor valueCursor = activity.dbHelper.getAttributeValues(attributeID);
 
-			      Log.i(TAG, "Got the cursor? "
+            Log.i(TAG, "Got the cursor? "
                     + (valueCursor == null ? "Null!?!?!?" : "Cursor Okay!"));
 
             String[] from = {
