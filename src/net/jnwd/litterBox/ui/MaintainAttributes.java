@@ -260,14 +260,24 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
             return rootView;
         }
 
-        private void fillValues(long attributeID) {
+        private void fillValues() {
             MaintainAttributes activity = ((MaintainAttributes) getActivity());
 
             Log.i(TAG, "Loading the stored values for the attribute...");
 
+			long attributeID = activity.getSelectedAttributeID();
+			
+			Cursor attributeCursor = activity.getDbHelper().getAttribute(attributeID);
+			
+			String attributeDescription = attributeCursor.getString(attributeCursor.getColumnIndex(LitterAttribute.column_Description));
+			
+			TextView description = (TextView) activity.findViewById(R.id.maAttributeDescShow);
+			
+			description.setText(attributeDescription);
+			
             Cursor valueCursor = activity.dbHelper.getAttributeValues(attributeID);
 
-            Log.i(TAG, "Got the cursor? "
+			      Log.i(TAG, "Got the cursor? "
                     + (valueCursor == null ? "Null!?!?!?" : "Cursor Okay!"));
 
             String[] from = {
