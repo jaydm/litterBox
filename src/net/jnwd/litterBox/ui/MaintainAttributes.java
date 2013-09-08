@@ -51,6 +51,8 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
     }
 
     public void setSelectedAttributeID(long id) {
+        Log.i(TAG, "Setting the selected attributeID to: " + id);
+
         selectedAttributeID = id;
     }
 
@@ -76,6 +78,14 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
             @Override
             public void onPageSelected(int position) {
                 actionBar.setSelectedNavigationItem(position);
+
+                Log.i(TAG, "Moving to page: " + position);
+
+                if (position == 0) {
+                    return;
+                }
+
+                fillValues();
             }
         });
 
@@ -246,7 +256,7 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
         }
     }
 
-    public static class ValueFragment extends Fragment implements OnItemSelectedListener {
+    public static class ValueFragment extends Fragment {
         private final String TAG = "maValue";
 
         @Override
@@ -259,83 +269,80 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.maintain_attribute_tab2, container, false);
 
-            fillValues(rootView);
-
             return rootView;
         }
+    }
 
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+    private void fillValues() {
+        ListView values = (ListView) findViewById(R.id.maAttributeValues);
 
+        Log.i(TAG, "Loading the stored values for the attribute...");
+
+        long attributeID = getSelectedAttributeID();
+
+        Log.i(TAG, "Attribute ID (used to show values): " + attributeID);
+
+        if (attributeID <= 0) {
+            return;
         }
 
-        @Override
-        public void onNothingSelected(AdapterView<?> arg0) {
+        Cursor attributeCursor = getDbHelper().getAttribute(attributeID);
 
+        String attributeDescription = attributeCursor.getString(attributeCursor
+                .getColumnIndex(LitterAttribute.column_Description));
+
+        Log.i(TAG, "Setting display value of attribute name to: " + attributeDescription);
+
+        boolean isEnumerated = attributeCursor.getString(
+                attributeCursor.getColumnIndex(LitterAttribute.column_Type)).startsWith("enum");
+
+        EditText addValue = (EditText) findViewById(R.id.maAttributeAddValue);
+
+        addValue.setText("");
+        addValue.setEnabled(false);
+
+        if (isEnumerated) {
+            addValue.setEnabled(true);
         }
 
-        private void fillValues(View view) {
-            MaintainAttributes activity = ((MaintainAttributes) getActivity());
+        TextView description = (TextView) findViewById(R.id.maAttributeDescShow);
 
-            ListView values = (ListView) view.findViewById(R.id.maAttributeValues);
+        description.setText(attributeDescription);
 
-            Log.i(TAG, "Loading the stored values for the attribute...");
+        Cursor valueCursor = dbHelper.getAttributeValues(attributeID);
 
-            long attributeID = activity.getSelectedAttributeID();
+        Log.i(TAG, "Got the cursor? "
+                + (valueCursor == null ? "Null!?!?!?" : "Cursor Okay!"));
 
-            Log.i(TAG, "Attribute ID (used to show values): " + attributeID);
+        String[] from = {
+                LitterAttributeValue.showColumn
+        };
 
-            if (attributeID <= 0) {
-                return;
+        int[] to = {
+                android.R.id.text1
+        };
+
+        Log.i(TAG, "Create the cursor adapter...");
+
+        @SuppressWarnings("deprecation")
+        SimpleCursorAdapter valueAdapter = new SimpleCursorAdapter(this,
+                android.R.layout.simple_list_item_1, valueCursor, from, to);
+
+        Log.i(TAG, "Connect adapter to the spinner...");
+
+        values.setAdapter(valueAdapter);
+
+        values.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
             }
 
-            Cursor attributeCursor = activity.getDbHelper().getAttribute(attributeID);
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
 
-            String attributeDescription = attributeCursor.getString(attributeCursor
-                    .getColumnIndex(LitterAttribute.column_Description));
-
-            Log.i(TAG, "Setting display value of attribute name to: " + attributeDescription);
-
-            boolean isEnumerated = attributeCursor.getString(
-                    attributeCursor.getColumnIndex(LitterAttribute.column_Type)).startsWith("enum");
-
-            EditText addValue = (EditText) view.findViewById(R.id.maAttributeAddValue);
-
-            addValue.setText("");
-            addValue.setEnabled(false);
-
-            if (isEnumerated) {
-                addValue.setEnabled(true);
             }
-
-            TextView description = (TextView) view.findViewById(R.id.maAttributeDescShow);
-
-            description.setText(attributeDescription);
-
-            Cursor valueCursor = activity.dbHelper.getAttributeValues(attributeID);
-
-            Log.i(TAG, "Got the cursor? "
-                    + (valueCursor == null ? "Null!?!?!?" : "Cursor Okay!"));
-
-            String[] from = {
-                    LitterAttributeValue.showColumn
-            };
-
-            int[] to = {
-                    android.R.id.text1
-            };
-
-            Log.i(TAG, "Create the cursor adapter...");
-
-            @SuppressWarnings("deprecation")
-            SimpleCursorAdapter valueAdapter = new SimpleCursorAdapter(getActivity(),
-                    android.R.layout.simple_list_item_1, valueCursor, from, to);
-
-            Log.i(TAG, "Connect adapter to the spinner...");
-
-            values.setAdapter(valueAdapter);
-
-            values.setOnItemSelectedListener(this);
-        }
+        });
     }
 }
