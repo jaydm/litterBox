@@ -246,7 +246,7 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
         }
     }
 
-    public static class ValueFragment extends Fragment {
+    public static class ValueFragment extends Fragment implements OnItemSelectedListener {
         private final String TAG = "maValue";
 
         @Override
@@ -259,19 +259,35 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.maintain_attribute_tab2, container, false);
 
-            fillValues();
+            fillValues(rootView);
 
             return rootView;
         }
 
-        private void fillValues() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> arg0) {
+
+        }
+
+        private void fillValues(View view) {
             MaintainAttributes activity = ((MaintainAttributes) getActivity());
 
-            ListView values = (ListView) activity.findViewById(R.id.maAttributeValues);
+            ListView values = (ListView) view.findViewById(R.id.maAttributeValues);
 
             Log.i(TAG, "Loading the stored values for the attribute...");
 
             long attributeID = activity.getSelectedAttributeID();
+
+            Log.i(TAG, "Attribute ID (used to show values): " + attributeID);
+
+            if (attributeID <= 0) {
+                return;
+            }
 
             Cursor attributeCursor = activity.getDbHelper().getAttribute(attributeID);
 
@@ -283,15 +299,16 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
             boolean isEnumerated = attributeCursor.getString(
                     attributeCursor.getColumnIndex(LitterAttribute.column_Type)).startsWith("enum");
 
-            EditText addValue = (EditText) activity.findViewById(R.id.maAttributeAddValue);
+            EditText addValue = (EditText) view.findViewById(R.id.maAttributeAddValue);
 
+            addValue.setText("");
             addValue.setEnabled(false);
 
             if (isEnumerated) {
                 addValue.setEnabled(true);
             }
 
-            TextView description = (TextView) activity.findViewById(R.id.maAttributeDescShow);
+            TextView description = (TextView) view.findViewById(R.id.maAttributeDescShow);
 
             description.setText(attributeDescription);
 
@@ -313,6 +330,12 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
             @SuppressWarnings("deprecation")
             SimpleCursorAdapter valueAdapter = new SimpleCursorAdapter(getActivity(),
                     android.R.layout.simple_list_item_1, valueCursor, from, to);
+
+            Log.i(TAG, "Connect adapter to the spinner...");
+
+            values.setAdapter(valueAdapter);
+
+            values.setOnItemSelectedListener(this);
         }
     }
 }
