@@ -6,7 +6,7 @@
         <item>Freeform Text</item>
         <item>Enumerated Text (list)</item>
         <item>Integer Entry</item>
-        <item>Integer (Select)</item>
+        <item>Enumerated Integer (list)</item>
         <item>Decimal Entry</item>
         <item>Boolean (true/false)</item>
         <item>Date</item>

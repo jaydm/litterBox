@@ -30,7 +30,8 @@
         android:id="@+id/maAttributeDesc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10" >
+        android:ems="10"
+        android:hint="@string/ma_attribute_desc_hint" >
 
         <requestFocus />
     </EditText>
@@ -50,6 +51,6 @@
         android:id="@+id/maButton1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:text="@string/ma_button_add_label" />
 
 </LinearLayout>
