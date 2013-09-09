@@ -68,7 +68,7 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
 
         final ActionBar actionBar = getActionBar();
 
-        actionBar.setHomeButtonEnabled(false);
+        actionBar.setHomeButtonEnabled(true);
 
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
@@ -81,11 +81,19 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
 
                 Log.i(TAG, "Moving to page: " + position);
 
-                if (position == 0) {
-                    return;
-                }
+                switch (position) {
+                    case 0:
+                        // main page (controller)
+                        return;
+                    case 1:
+                        fillValues();
 
-                fillValues();
+                        break;
+                    default:
+                        // if no special response
+                        // do nothing
+                        break;
+                }
             }
         });
 
