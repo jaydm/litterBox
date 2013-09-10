@@ -19,7 +19,7 @@
         android:id="@+id/maAttributeDescShow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Medium Text"
+        android:text="@string/placeholder"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -32,7 +32,8 @@
         android:id="@+id/maAttributeAddValue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10" >
+        android:ems="10"
+        android:hint="@string/ma_attribute_value_hint" >
 
         <requestFocus />
     </EditText>
@@ -41,7 +42,7 @@
         android:id="@+id/maButton2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/ma_button_add_label" />
+        android:text="@string/button_add_label" />
 
     <ListView
         android:id="@+id/maAttributeValues"

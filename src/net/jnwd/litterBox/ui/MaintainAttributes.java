@@ -1,6 +1,8 @@
 
 package net.jnwd.litterBox.ui;
 
+import java.util.Locale;
+
 import net.jnwd.litterBox.R;
 import net.jnwd.litterBox.data.LitterAttribute;
 import net.jnwd.litterBox.data.LitterAttributeValue;
@@ -17,6 +19,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -33,7 +36,6 @@ import android.widget.Toast;
 
 public class MaintainAttributes extends FragmentActivity implements ActionBar.TabListener {
     private AttributePagerAdapter attributePager;
-
     private ViewPager mViewPager;
 
     protected final String TAG = "Maintain Attributes";
@@ -80,13 +82,13 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
 
         setContentView(R.layout.activity_maintain_attributes);
 
-        attributePager = new AttributePagerAdapter(getSupportFragmentManager());
-
         final ActionBar actionBar = getActionBar();
 
         actionBar.setHomeButtonEnabled(true);
 
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        attributePager = new AttributePagerAdapter(getSupportFragmentManager());
 
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(attributePager);
@@ -99,13 +101,11 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
 
                 switch (position) {
                     case 0:
-                        if (areAttributesLoaded()) {
-                            return;
+                        if (!areAttributesLoaded()) {
+                            fillAttributes();
                         }
 
-                        fillAttributes();
-
-                        return;
+                        break;
                     case 1:
                         fillValues();
 
@@ -127,6 +127,13 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.litter_box, menu);
+
+        return true;
+    }
+
+    @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 
     }
@@ -134,6 +141,8 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         mViewPager.setCurrentItem(tab.getPosition());
+
+        Log.i(TAG, "Selected tab is: " + tab.getPosition());
     }
 
     @Override
@@ -160,12 +169,14 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
                 case 0:
                     page = new AttributeFragment();
 
-                    return page;
+                    break;
                 default:
                     page = new ValueFragment();
 
-                    return page;
+                    break;
             }
+
+            return page;
         }
 
         @Override
@@ -175,6 +186,9 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
 
         @Override
         public CharSequence getPageTitle(int position) {
+            @SuppressWarnings("unused")
+            Locale l = Locale.getDefault();
+
             return pageTitle[position];
         }
     }
@@ -188,6 +202,14 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
+        }
+
+        @Override
+        public void onCreate(Bundle bundle) {
+            super.onCreate(bundle);
+
+            if (bundle == null) {
+            }
         }
 
         @Override
@@ -263,6 +285,72 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
                 }
             });
 
+            {
+                MaintainAttributes activity = (MaintainAttributes) getActivity();
+
+                Log.i(TAG, "Create reference to attribute spinner...");
+
+                Spinner attributeID = (Spinner) rootView.findViewById(R.id.maAttributeID);
+
+                Log.i(TAG, "Spinner is " + (attributeID == null ? "null" : "not null"));
+
+                Log.i(TAG, "Create a cursor of all attributes...");
+
+                Cursor attributeCursor = activity.getDbHelper().getAttributeList();
+
+                Log.i(TAG, "Cursor is " + (attributeCursor == null ? "null" : "not null"));
+
+                Log.i(TAG,
+                        "Create from and to references to connect the cursor to the spinner...");
+
+                String[] from = {
+                        LitterAttribute.showColumn
+                };
+
+                int[] to = {
+                        android.R.id.text1
+                };
+
+                Log.i(TAG, "Create the cursor adapter...");
+
+                @SuppressWarnings("deprecation")
+                SimpleCursorAdapter attributeAdapter = new SimpleCursorAdapter(activity,
+                        android.R.layout.simple_spinner_item, attributeCursor, from, to);
+
+                Log.i(TAG, "Connect adapter to the spinner...");
+
+                attributeID.setAdapter(attributeAdapter);
+
+                Log.i(TAG, "Creating the itemSelectedListener...");
+
+                attributeID.setOnItemSelectedListener(new OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position,
+                            long id) {
+                        ((MaintainAttributes) getActivity()).setSelectedAttributeID(id);
+
+                        Cursor currentAttribute = ((MaintainAttributes) getActivity())
+                                .getDbHelper().getAttribute(id);
+
+                        TextView showType = (TextView) ((MaintainAttributes) getActivity())
+                                .findViewById(R.id.maAttributeTypeLabel);
+
+                        String label = getResources().getString(R.string.ma_attribute_type_label);
+
+                        showType.setText(label + " (currently: "
+                                + currentAttribute.getString(currentAttribute
+                                        .getColumnIndex(LitterAttribute.column_Type)) + ")");
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> arg0) {
+
+                    }
+                });
+
+                ((MaintainAttributes) getActivity()).setAttributesLoaded(true);
+            }
+
             return rootView;
         }
 
@@ -275,6 +363,15 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
+        }
+
+        @Override
+        public void onCreate(Bundle bundle) {
+            super.onCreate(bundle);
+
+            if (bundle == null) {
+                // do first time things
+            }
         }
 
         @Override
@@ -402,7 +499,8 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
         Log.i(TAG, "Setting display value of attribute name to: " + attributeDescription);
 
         boolean isEnumerated = attributeCursor.getString(
-                attributeCursor.getColumnIndex(LitterAttribute.column_Type)).toLowerCase()
+                attributeCursor.getColumnIndex(LitterAttribute.column_Type))
+                .toLowerCase(Locale.getDefault())
                 .startsWith("enum");
 
         EditText addValue = (EditText) findViewById(R.id.maAttributeAddValue);
