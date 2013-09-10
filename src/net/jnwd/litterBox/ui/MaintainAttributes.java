@@ -15,9 +15,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -150,22 +151,30 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
 
     }
 
-    public static class AttributePagerAdapter extends FragmentPagerAdapter {
+    public static class AttributePagerAdapter extends FragmentStatePagerAdapter {
         private final int pageCount = 2;
         private final String[] pageTitle = {
                 "Attributes",
                 "Values"
         };
 
+        SparseArray<Fragment> pages = new SparseArray<Fragment>();
+
         public AttributePagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
-        public Fragment getItem(int i) {
+        public Fragment getItem(int index) {
             Fragment page;
 
-            switch (i) {
+            page = pages.get(index);
+
+            if (page != null) {
+                return page;
+            }
+
+            switch (index) {
                 case 0:
                     page = new AttributeFragment();
 
@@ -176,7 +185,16 @@ public class MaintainAttributes extends FragmentActivity implements ActionBar.Ta
                     break;
             }
 
+            pages.put(index, page);
+
             return page;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            super.destroyItem(container, position, object);
+
+            pages.delete(position);
         }
 
         @Override
