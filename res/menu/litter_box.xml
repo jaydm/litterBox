@@ -1,54 +1,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/action_view_entities"
+        android:id="@+id/action_maintain_entities"
         android:orderInCategory="100"
-        android:showAsAction="ifRoom"
-        android:title="@string/action_view_entities"/>
+        android:showAsAction="never"
+        android:title="@string/action_maintain_entities"/>
     <item
-        android:id="@+id/action_view_classes"
+        android:id="@+id/action_maintain_classes"
         android:orderInCategory="200"
         android:showAsAction="never"
-        android:title="@string/action_view_classes"/>
+        android:title="@string/action_maintain_classes"/>
     <item
-        android:id="@+id/action_view_attributes"
+        android:id="@+id/action_maintain_attributes"
         android:orderInCategory="300"
         android:showAsAction="never"
-        android:title="@string/action_view_attributes"/>
-    <item
-        android:id="@+id/action_edit_entities"
-        android:orderInCategory="400"
-        android:showAsAction="ifRoom"
-        android:title="@string/action_edit_entities"/>
-    <item
-        android:id="@+id/action_edit_classes"
-        android:orderInCategory="500"
-        android:showAsAction="never"
-        android:title="@string/action_edit_classes"/>
-    <item
-        android:id="@+id/action_edit_attributes"
-        android:orderInCategory="600"
-        android:showAsAction="never"
-        android:title="@string/action_edit_attributes"/>
-    <item
-        android:id="@+id/action_add_entities"
-        android:orderInCategory="700"
-        android:showAsAction="ifRoom"
-        android:title="@string/action_add_entities"/>
-    <item
-        android:id="@+id/action_add_classes"
-        android:orderInCategory="800"
-        android:showAsAction="never"
-        android:title="@string/action_add_classes"/>
-    <item
-        android:id="@+id/action_add_attributes"
-        android:orderInCategory="900"
-        android:showAsAction="never"
-        android:title="@string/action_add_attributes"/>
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="1000"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
+        android:title="@string/action_maintain_attributes"/>
 
 </menu>

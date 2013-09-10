@@ -3,29 +3,16 @@ package net.jnwd.litterBox.base;
 
 import net.jnwd.litterBox.R;
 import net.jnwd.litterBox.ui.MaintainAttributes;
-import android.app.Activity;
+import net.jnwd.litterBox.ui.MaintainClasses;
 import android.content.Intent;
-import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class LitterBoxActivity extends Activity {
+public class LitterBoxActivity extends FragmentActivity {
     protected final String TAG = "LitterBox";
     protected final int myLayout = R.layout.litter_box;
     protected final int myMenu = R.menu.litter_box;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setContentView(myLayout);
-
-        setupActionBar();
-    }
-
-    private void setupActionBar() {
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -39,21 +26,22 @@ public class LitterBoxActivity extends Activity {
         Intent intent;
 
         switch (item.getItemId()) {
-            case R.id.action_edit_entities:
+            case R.id.action_maintain_entities:
+                // intent = new Intent(getBaseContext(),MaintainEntities.class);
+
+                // startActivity(intent);
+
                 return true;
-            case R.id.action_edit_classes:
-                return true;
-            case R.id.action_edit_attributes:
-                intent = new Intent(this, MaintainAttributes.class);
+            case R.id.action_maintain_classes:
+                intent = new Intent(getBaseContext(), MaintainClasses.class);
 
                 startActivity(intent);
 
                 return true;
-            case R.id.action_settings:
-                // currently unsupported :(
-                // intent = new Intent(this, MaintainSettings.class);
+            case R.id.action_maintain_attributes:
+                intent = new Intent(getBaseContext(), MaintainAttributes.class);
 
-                // startActivity(intent);
+                startActivity(intent);
 
                 return true;
             default:

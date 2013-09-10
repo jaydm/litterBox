@@ -4,6 +4,7 @@ package net.jnwd.litterBox.ui;
 import java.util.Locale;
 
 import net.jnwd.litterBox.R;
+import net.jnwd.litterBox.base.LitterBoxActivity;
 import net.jnwd.litterBox.data.LitterAttribute;
 import net.jnwd.litterBox.data.LitterAttributeValue;
 import net.jnwd.litterBox.data.LitterDBase;
@@ -13,7 +14,6 @@ import android.app.FragmentTransaction;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -35,7 +35,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MaintainAttributes extends FragmentActivity implements ActionBar.TabListener {
+public class MaintainAttributes extends LitterBoxActivity implements ActionBar.TabListener {
     private AttributePagerAdapter attributePager;
     private ViewPager mViewPager;
 
