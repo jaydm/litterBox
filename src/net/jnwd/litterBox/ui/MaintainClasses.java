@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Spinner;
 
 public class MaintainClasses extends LitterBoxActivity implements ActionBar.TabListener {
     ClassPagerAdapter classPager;
@@ -188,6 +189,10 @@ public class MaintainClasses extends LitterBoxActivity implements ActionBar.TabL
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.maintain_class_tab1, container, false);
+
+            Spinner selectedClass = (Spinner) rootView.findViewById(R.id.mcClassID);
+
+            ((MaintainClasses) getActivity()).setSelectedClass(selectedClass.getSelectedItemId());
 
             return rootView;
         }
