@@ -62,10 +62,6 @@ public class MaintainClasses extends LitterBoxActivity implements ActionBar.TabL
         classesLoaded = loaded;
     }
 
-    public LitterDBase getDbHelper() {
-        return dbHelper;
-    }
-
     private long getSelectedClass() {
         return selectedClass;
     }
@@ -229,6 +225,8 @@ public class MaintainClasses extends LitterBoxActivity implements ActionBar.TabL
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
+            Log.i(TAG, "Creating the class page...");
+
             View rootView = inflater.inflate(R.layout.maintain_class_tab1, container, false);
 
             Button addClass = (Button) rootView.findViewById(R.id.mcButton1);
@@ -243,8 +241,7 @@ public class MaintainClasses extends LitterBoxActivity implements ActionBar.TabL
 
                     LitterClass newClass = new LitterClass(classDescription);
 
-                    long newClassID = ((MaintainClasses) getActivity()).dbHelper
-                            .insertClass(newClass);
+                    ((MaintainClasses) getActivity()).dbHelper.insertClass(newClass);
 
                     addClassDescription.setText("");
 
@@ -276,6 +273,8 @@ public class MaintainClasses extends LitterBoxActivity implements ActionBar.TabL
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
+            Log.i(TAG, "Creating the class attribute page...");
+
             View rootView = inflater.inflate(R.layout.maintain_class_tab2, container, false);
 
             Button addClass = (Button) rootView.findViewById(R.id.mcAddClassButton);
