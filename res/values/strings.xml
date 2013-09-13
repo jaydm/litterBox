@@ -34,5 +34,9 @@
     <string name="button_add_label">Add</string>
     <string name="button_update_label">Update</string>
     <string name="button_remove_label">Remove</string>
+    <string name="title_activity_maintain_entities">Maintain Entities</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
 
 </resources>
