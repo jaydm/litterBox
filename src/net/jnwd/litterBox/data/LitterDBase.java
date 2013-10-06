@@ -14,11 +14,11 @@ public class LitterDBase {
     private static final String TAG = "LitterDBase";
 
     private static final String DATABASE_NAME = "LitterBox";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 1;
 
     private final Context mContext;
 
-    private DatabaseOpenHelper mDatabaseOpenHelper;
+    private DatabaseOpenHelper mHelper;
     private SQLiteDatabase mDb;
 
     public LitterDBase(Context context) {
@@ -28,16 +28,16 @@ public class LitterDBase {
     }
 
     public LitterDBase open() throws SQLException {
-        mDatabaseOpenHelper = new DatabaseOpenHelper(mContext);
+        mHelper = new DatabaseOpenHelper(mContext);
 
-        mDb = mDatabaseOpenHelper.getWritableDatabase();
+        mDb = mHelper.getWritableDatabase();
 
         return this;
     }
 
     public void close() {
-        if (mDatabaseOpenHelper != null) {
-            mDatabaseOpenHelper.close();
+        if (mHelper != null) {
+            mHelper.close();
         }
     }
 
@@ -142,7 +142,7 @@ public class LitterDBase {
     private static class DatabaseOpenHelper extends SQLiteOpenHelper {
         @SuppressWarnings("unused")
         private final Context mHelperContext;
-        private SQLiteDatabase mDatabase;
+        private SQLiteDatabase mDb;
 
         DatabaseOpenHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -154,19 +154,19 @@ public class LitterDBase {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            mDatabase = db;
+            mDb = db;
 
-            mDatabase.execSQL(LitterClass.createCommand());
+            mDb.execSQL(LitterClass.createCommand());
 
-            mDatabase.execSQL(LitterAttribute.createCommand());
+            mDb.execSQL(LitterAttribute.createCommand());
 
-            mDatabase.execSQL(LitterClassAttribute.createCommand());
+            mDb.execSQL(LitterClassAttribute.createCommand());
 
-            mDatabase.execSQL(LitterAttributeValue.createCommand());
+            mDb.execSQL(LitterAttributeValue.createCommand());
 
-            mDatabase.execSQL(LitterEntity.createCommand());
+            mDb.execSQL(LitterEntity.createCommand());
 
-            mDatabase.execSQL(LitterEntityAttribute.createCommand());
+            mDb.execSQL(LitterEntityAttribute.createCommand());
 
             loadDatabase();
         }
@@ -193,7 +193,8 @@ public class LitterDBase {
                 @Override
                 public void run() {
                     try {
-                        loadBases();
+                        createAddressClass();
+                        createPersonClass();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -201,97 +202,101 @@ public class LitterDBase {
             }).start();
         }
 
-        private void loadBases() throws IOException {
-            // define an address class
-            long addressClassID = mDatabase.insert(LitterClass.table, null, new LitterClass(
-                    "Address").addNew());
-
-            long attributeID;
-
-            attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute(
-                    "Address1", "freeformText").addNew());
-            mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(
-                    addressClassID, 10, null, attributeID, "Address 1").addNew());
-
-            attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute(
-                    "Address2", "freeformText").addNew());
-            mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(
-                    addressClassID, 20, null, attributeID, "Address 2").addNew());
-
-            attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute(
-                    "Address3", "freeformText").addNew());
-            mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(
-                    addressClassID, 30, null, attributeID, "Address 3").addNew());
-
-            attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("City",
-                    "freeformText").addNew());
-            mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(
-                    addressClassID, 40, null, attributeID, "City").addNew());
-
-            attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute(
-                    "State", "enumText").addNew());
-            mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(
-                    addressClassID, 50, null, attributeID, "State").addNew());
-
-            mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(
-                    attributeID, 10, "AK").addNew());
-            mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(
-                    attributeID, 20, "AL").addNew());
-            mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(
-                    attributeID, 30, "AR").addNew());
-            mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(
-                    attributeID, 40, "AZ").addNew());
-            mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(
-                    attributeID, 50, "IA").addNew());
-            mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(
-                    attributeID, 60, "IL").addNew());
-            mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(
-                    attributeID, 70, "IN").addNew());
-            mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(
-                    attributeID, 80, "NJ").addNew());
-            mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(
-                    attributeID, 90, "NM").addNew());
-            mDatabase.insert(LitterAttributeValue.table, null, new LitterAttributeValue(
-                    attributeID, 100, "NY").addNew());
-
-            attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute("Zip",
-                    "freeformText").addNew());
-            mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(
-                    addressClassID, 60, null, attributeID, "Zip Code").addNew());
-
+        private void createPersonClass() throws IOException {
             // define person class
-            long personClassID = mDatabase.insert(LitterClass.table, null,
+            long personClassID = mDb.insert(LitterClass.table, null,
                     new LitterClass("Person").addNew());
 
-            attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute(
+            long firstNameID = mDb.insert(LitterAttribute.table, null, new LitterAttribute(
                     "FirstName", "freeformText").addNew());
-            mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(
-                    personClassID, 10, null, attributeID, "First Name").addNew());
+            mDb.insert(LitterClassAttribute.table, null, new LitterClassAttribute(
+                    personClassID, 10, null, firstNameID, "First Name").addNew());
 
-            attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute(
-                    "MiddleInitial", "freeformText").addNew());
-            mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(
-                    personClassID, 20, null, attributeID, "Initial").addNew());
+            long middleNameID = mDb.insert(LitterAttribute.table, null, new LitterAttribute(
+                    "MiddleName", "freeformText").addNew());
+            mDb.insert(LitterClassAttribute.table, null, new LitterClassAttribute(
+                    personClassID, 20, null, middleNameID, "Middle Name").addNew());
 
-            attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute(
+            long lastNameID = mDb.insert(LitterAttribute.table, null, new LitterAttribute(
                     "LastName", "freeformText").addNew());
-            mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(
-                    personClassID, 30, null, attributeID, "Last Name").addNew());
+            mDb.insert(LitterClassAttribute.table, null, new LitterClassAttribute(
+                    personClassID, 30, null, lastNameID, "Last Name").addNew());
 
-            mDatabase.insert(LitterClassAttribute.table, null, new LitterClassAttribute(
+            mDb.insert(LitterClassAttribute.table, null, new LitterClassAttribute(
                     personClassID, 40, addressClassID, null, "Home Address").addNew());
 
             // generic attributes - Dates
-            attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute(
+            attributeID = mDb.insert(LitterAttribute.table, null, new LitterAttribute(
                     "StartDate", "date").addNew());
-            attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute(
+            attributeID = mDb.insert(LitterAttribute.table, null, new LitterAttribute(
                     "EndDate", "date").addNew());
-            attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute(
+            attributeID = mDb.insert(LitterAttribute.table, null, new LitterAttribute(
                     "BirthDate", "date").addNew());
 
             // generic attributes - General
-            attributeID = mDatabase.insert(LitterAttribute.table, null, new LitterAttribute(
+            attributeID = mDb.insert(LitterAttribute.table, null, new LitterAttribute(
                     "Comment", "freeformText").addNew());
+        }
+
+        private void createAddressClass() throws IOException {
+            long addressClassID = mDb.insert(LitterClass.table, null,
+                    new LitterClass(
+                            "Address").addNew());
+
+            long address1ID = mDb.insert(LitterAttribute.table, null,
+                    new LitterAttribute(
+                            "Address1", "freeformText").addNew());
+            mDb.insert(LitterClassAttribute.table, null,
+                    new LitterClassAttribute(
+                            addressClassID, 10, null, address1ID, "Address 1").addNew());
+
+            long address2ID = mDb.insert(LitterAttribute.table, null,
+                    new LitterAttribute("Address2", "freeformText").addNew());
+            mDb.insert(LitterClassAttribute.table, null,
+                    new LitterClassAttribute(addressClassID, 20, null, address2ID, "Address 2")
+                            .addNew());
+
+            long address3ID = mDb.insert(LitterAttribute.table, null,
+                    new LitterAttribute("Address3", "freeformText").addNew());
+            mDb.insert(LitterClassAttribute.table, null,
+                    new LitterClassAttribute(addressClassID, 30, null, address3ID, "Address 3")
+                            .addNew());
+
+            long cityID = mDb.insert(LitterAttribute.table, null,
+                    new LitterAttribute("City", "freeformText").addNew());
+            mDb.insert(LitterClassAttribute.table, null,
+                    new LitterClassAttribute(addressClassID, 40, null, cityID, "City").addNew());
+
+            long stateID = mDb.insert(LitterAttribute.table, null,
+                    new LitterAttribute("State", "enumText").addNew());
+            mDb.insert(LitterClassAttribute.table, null,
+                    new LitterClassAttribute(addressClassID, 50, null, stateID, "State").addNew());
+
+            mDb.insert(LitterAttributeValue.table, null,
+                    new LitterAttributeValue(stateID, 10, "AK").addNew());
+            mDb.insert(LitterAttributeValue.table, null,
+                    new LitterAttributeValue(stateID, 20, "AL").addNew());
+            mDb.insert(LitterAttributeValue.table, null,
+                    new LitterAttributeValue(stateID, 30, "AR").addNew());
+            mDb.insert(LitterAttributeValue.table, null,
+                    new LitterAttributeValue(stateID, 40, "AZ").addNew());
+            mDb.insert(LitterAttributeValue.table, null,
+                    new LitterAttributeValue(stateID, 50, "IA").addNew());
+            mDb.insert(LitterAttributeValue.table, null,
+                    new LitterAttributeValue(stateID, 60, "IL").addNew());
+            mDb.insert(LitterAttributeValue.table, null,
+                    new LitterAttributeValue(stateID, 70, "IN").addNew());
+            mDb.insert(LitterAttributeValue.table, null,
+                    new LitterAttributeValue(stateID, 80, "NJ").addNew());
+            mDb.insert(LitterAttributeValue.table, null,
+                    new LitterAttributeValue(stateID, 90, "NM").addNew());
+            mDb.insert(LitterAttributeValue.table, null,
+                    new LitterAttributeValue(stateID, 100, "NY").addNew());
+
+            long zipID = mDb.insert(LitterAttribute.table, null,
+                    new LitterAttribute("Zip", "freeformText").addNew());
+            mDb.insert(LitterClassAttribute.table, null,
+                    new LitterClassAttribute(addressClassID, 60, null, zipID, "Zip Code").addNew());
         }
     }
 }
