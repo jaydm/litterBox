@@ -19,7 +19,6 @@ public class LitterDBase {
     private final Context mContext;
 
     private DatabaseOpenHelper mHelper;
-    private SQLiteDatabase mDb;
 
     public LitterDBase(Context context) {
         super();
@@ -30,7 +29,7 @@ public class LitterDBase {
     public LitterDBase open() throws SQLException {
         mHelper = new DatabaseOpenHelper(mContext);
 
-        mDb = mHelper.getWritableDatabase();
+        mHelper.open();
 
         return this;
     }
@@ -41,98 +40,60 @@ public class LitterDBase {
         }
     }
 
-    public Cursor getClassList() {
-        Cursor mCursor = mDb.query(LitterClass.table, LitterClass.allColumns, null, null, null,
-                null, null);
-
-        if (mCursor != null) {
-            mCursor.moveToFirst();
-        }
-
-        return mCursor;
+    public Cursor getClassListCursor() {
+        return mHelper.getClassListCursor();
     }
 
-    public Cursor getClass(Long classID) {
-        Cursor cursor = mDb.query(LitterClass.table, LitterClass.allColumns,
-                "_id = " + classID.toString(), null, null, null, null, null);
-
-        if (cursor == null) {
-            return null;
-        }
-
-        cursor.moveToFirst();
-
-        return cursor;
+    public Cursor getClassCursor(Long classID) {
+        return mHelper.getClassCursor(classID);
     }
 
-    public Cursor getAttributeList() {
-        Cursor mCursor = mDb.query(LitterAttribute.table, LitterAttribute.allColumns, null, null,
-                null, null, null);
-
-        if (mCursor != null) {
-            mCursor.moveToFirst();
-        }
-
-        return mCursor;
+    public LitterClass getClass(Long classID) {
+        return mHelper.getClass(classID);
     }
 
-    public Cursor getAttribute(Long attributeID) {
-        Cursor cursor = mDb.query(LitterAttribute.table, LitterAttribute.allColumns, "_id = "
-                + attributeID.toString(), null, null, null, null, null);
-
-        if (cursor == null) {
-            return null;
-        }
-
-        cursor.moveToFirst();
-
-        return cursor;
+    public LitterClass getClass(String className) {
+        return mHelper.getClass(className);
     }
 
-    public Cursor getAttributeValues(Long attributeID) {
-        Cursor cursor = mDb.query(LitterAttributeValue.table, LitterAttributeValue.allColumns,
-                "attributeID = " + attributeID.toString(), null, null, null, "sequence");
-
-        if (cursor == null) {
-            Log.i(TAG, "Null results set...Return null...");
-
-            return null;
-        }
-
-        cursor.moveToFirst();
-
-        return cursor;
+    public Cursor getAttributeListCursor() {
+        return mHelper.getAttributeListCursor();
     }
 
-    public Cursor getClassAttributes(Long classID) {
-        Cursor cursor = mDb.query(LitterClassAttribute.table, LitterClassAttribute.allColumns,
-                "parentID = " + classID.toString(), null, null, null, null);
+    public Cursor getAttributeCursor(Long attributeID) {
+        return mHelper.getAttributeCursor(attributeID);
+    }
 
-        if (cursor == null) {
-            Log.i(TAG, "Null results set...Return null...");
+    public LitterAttribute getAttribute(Long attributeID) {
+        return mHelper.getAttribute(attributeID);
+    }
 
-            return null;
-        }
+    public LitterAttribute getAttribute(String attributeName) {
+        return mHelper.getAttribute(attributeName);
+    }
 
-        cursor.moveToFirst();
+    public Cursor getAttributeValuesCursor(Long attributeID) {
+        return mHelper.getAttributeValuesCursor(attributeID);
+    }
 
-        return cursor;
+    public Cursor getClassAttributesCursor(Long classID) {
+        return mHelper.getClassAttributesCursor(classID);
     }
 
     public long insertClass(LitterClass clazz) {
-        return mDb.insert(LitterClass.table, null, clazz.addNew());
+        return mHelper.insertClass(clazz);
     }
 
     public long insertAttribute(LitterAttribute attribute) {
-        return mDb.insert(LitterAttribute.table, null, attribute.addNew());
+        return mHelper.insertAttribute(attribute);
     }
 
     public long insertAttributeValue(LitterAttributeValue value) {
-        return mDb.insert(LitterAttributeValue.table, null, value.addNew());
+        return mHelper.insertAttributeValue(value);
     }
 
     public long insertClassAttribute(LitterClassAttribute classAttribute) {
-        return mDb.insert(LitterClassAttribute.table, null, classAttribute.addNew());
+        return mHelper.insertClassAttribute(classAttribute);
     }
 
     public LitterEntity getEntity(long entityID) {
@@ -150,6 +111,16 @@ public class LitterDBase {
             Log.i(TAG, "Trying to create the database instance...");
 
             mHelperContext = context;
+        }
+
+        public void open() {
+            mDb = this.getWritableDatabase();
+        }
+
+        public void close() {
+            mDb.close();
+
+            super.close();
         }
 
         @Override
@@ -186,6 +157,161 @@ public class LitterDBase {
             onCreate(db);
         }
 
+        public Cursor getClassListCursor() {
+            Cursor mCursor = mDb.query(LitterClass.table, LitterClass.allColumns, null, null, null,
+                    null, null);
+
+            if (mCursor != null) {
+                mCursor.moveToFirst();
+            }
+
+            return mCursor;
+        }
+
+        public Cursor getClassCursor(Long classID) {
+            Cursor cursor = mDb.query(LitterClass.table, LitterClass.allColumns,
+                    LitterClass.column_ID + " = " + classID.toString(), null, null, null, null,
+                    null);
+
+            if (cursor == null) {
+                return null;
+            }
+
+            cursor.moveToFirst();
+
+            return cursor;
+        }
+
+        public LitterClass getClass(Long classID) {
+            Cursor cursor = mDb.query(LitterClass.table, LitterClass.allColumns,
+                    LitterClass.column_ID + " = " + classID.toString(), null, null, null, null,
+                    null);
+
+            if (cursor == null) {
+                return null;
+            }
+
+            cursor.moveToFirst();
+
+            return new LitterClass(cursor);
+        }
+
+        public LitterClass getClass(String className) {
+            Cursor cursor = mDb.query(LitterClass.table, LitterClass.allColumns,
+                    LitterClass.column_Description + " like ?", new String[] {
+                        className + "%"
+                    }, null, null, null);
+
+            if (cursor == null) {
+                return null;
+            }
+
+            cursor.moveToFirst();
+
+            return new LitterClass(cursor);
+        }
+
+        public Cursor getAttributeListCursor() {
+            Cursor mCursor = mDb.query(LitterAttribute.table, LitterAttribute.allColumns, null,
+                    null,
+                    null, null, null);
+
+            if (mCursor != null) {
+                mCursor.moveToFirst();
+            }
+
+            return mCursor;
+        }
+
+        public Cursor getAttributeCursor(Long attributeID) {
+            Cursor cursor = mDb.query(LitterAttribute.table, LitterAttribute.allColumns,
+                    LitterAttribute.column_ID + " = "
+                            + attributeID.toString(), null, null, null, null, null);
+
+            if (cursor == null) {
+                return null;
+            }
+
+            cursor.moveToFirst();
+
+            return cursor;
+        }
+
+        public LitterAttribute getAttribute(Long attributeID) {
+            Cursor cursor = mDb.query(LitterAttribute.table, LitterAttribute.allColumns,
+                    LitterAttribute.column_ID + " = "
+                            + attributeID.toString(), null, null, null, null, null);
+
+            if (cursor == null) {
+                return null;
+            }
+
+            cursor.moveToFirst();
+
+            return new LitterAttribute(cursor);
+        }
+
+        public LitterAttribute getAttribute(String attributeName) {
+            Cursor cursor = mDb.query(LitterAttribute.table, LitterAttribute.allColumns,
+                    LitterAttribute.column_Description + " like ?", new String[] {
+                        attributeName + "%"
+                    }, null, null, null);
+
+            if (cursor == null) {
+                return null;
+            }
+
+            cursor.moveToFirst();
+
+            return new LitterAttribute(cursor);
+        }
+
+        public Cursor getAttributeValuesCursor(Long attributeID) {
+            Cursor cursor = mDb.query(LitterAttributeValue.table, LitterAttributeValue.allColumns,
+                    "attributeID = " + attributeID.toString(), null, null, null, "sequence");
+
+            if (cursor == null) {
+                Log.i(TAG, "Null results set...Return null...");
+
+                return null;
+            }
+
+            cursor.moveToFirst();
+
+            return cursor;
+        }
+
+        public Cursor getClassAttributesCursor(Long classID) {
+            Cursor cursor = mDb.query(LitterClassAttribute.table, LitterClassAttribute.allColumns,
+                    "parentID = " + classID.toString(), null, null, null, null);
+
+            if (cursor == null) {
+                Log.i(TAG, "Null results set...Return null...");
+
+                return null;
+            }
+
+            cursor.moveToFirst();
+
+            return cursor;
+        }
+
+        public long insertClass(LitterClass clazz) {
+            return mDb.insert(LitterClass.table, null, clazz.addNew());
+        }
+
+        public long insertAttribute(LitterAttribute attribute) {
+            return mDb.insert(LitterAttribute.table, null, attribute.addNew());
+        }
+
+        public long insertAttributeValue(LitterAttributeValue value) {
+            return mDb.insert(LitterAttributeValue.table, null, value.addNew());
+        }
+
+        public long insertClassAttribute(LitterClassAttribute classAttribute) {
+            return mDb.insert(LitterClassAttribute.table, null, classAttribute.addNew());
+        }
+
         public void loadDatabase() {
             Log.i(TAG, "Start the load database thread...");
 
@@ -195,6 +321,7 @@ public class LitterDBase {
                     try {
                         createAddressClass();
                         createPersonClass();
+                        createGeneralAttributes();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -202,101 +329,67 @@ public class LitterDBase {
             }).start();
         }
 
-        private void createPersonClass() throws IOException {
-            // define person class
-            long personClassID = mDb.insert(LitterClass.table, null,
-                    new LitterClass("Person").addNew());
+        private void createAddressClass() throws IOException {
+            long addressClassID = insertClass(new LitterClass("Address"));
 
-            long firstNameID = mDb.insert(LitterAttribute.table, null, new LitterAttribute(
-                    "FirstName", "freeformText").addNew());
-            mDb.insert(LitterClassAttribute.table, null, new LitterClassAttribute(
-                    personClassID, 10, null, firstNameID, "First Name").addNew());
+            long address1ID = insertAttribute(new LitterAttribute("Address1", "freeformText"));
+            long address2ID = insertAttribute(new LitterAttribute("Address2", "freeformText"));
+            long address3ID = insertAttribute(new LitterAttribute("Address3", "freeformText"));
+            long cityID = insertAttribute(new LitterAttribute("City", "freeformText"));
+            long stateID = insertAttribute(new LitterAttribute("State", "enumText"));
+            long zipID = insertAttribute(new LitterAttribute("Zip", "freeformText"));
 
-            long middleNameID = mDb.insert(LitterAttribute.table, null, new LitterAttribute(
-                    "MiddleName", "freeformText").addNew());
-            mDb.insert(LitterClassAttribute.table, null, new LitterClassAttribute(
-                    personClassID, 20, null, middleNameID, "Middle Name").addNew());
+            insertClassAttribute(new LitterClassAttribute(addressClassID, 10, null, address1ID,
+                    "Address 1"));
+            insertClassAttribute(new LitterClassAttribute(addressClassID, 20, null, address2ID,
+                    "Address 2"));
+            insertClassAttribute(new LitterClassAttribute(addressClassID, 30, null, address3ID,
+                    "Address 3"));
+            insertClassAttribute(new LitterClassAttribute(addressClassID, 40, null, cityID, "City"));
+            insertClassAttribute(new LitterClassAttribute(addressClassID, 50, null, stateID,
+                    "State"));
+            insertClassAttribute(new LitterClassAttribute(addressClassID, 60, null, zipID,
+                    "Zip Code"));
 
-            long lastNameID = mDb.insert(LitterAttribute.table, null, new LitterAttribute(
-                    "LastName", "freeformText").addNew());
-            mDb.insert(LitterClassAttribute.table, null, new LitterClassAttribute(
-                    personClassID, 30, null, lastNameID, "Last Name").addNew());
-
-            mDb.insert(LitterClassAttribute.table, null, new LitterClassAttribute(
-                    personClassID, 40, addressClassID, null, "Home Address").addNew());
-
-            // generic attributes - Dates
-            attributeID = mDb.insert(LitterAttribute.table, null, new LitterAttribute(
-                    "StartDate", "date").addNew());
-            attributeID = mDb.insert(LitterAttribute.table, null, new LitterAttribute(
-                    "EndDate", "date").addNew());
-            attributeID = mDb.insert(LitterAttribute.table, null, new LitterAttribute(
-                    "BirthDate", "date").addNew());
-
-            // generic attributes - General
-            attributeID = mDb.insert(LitterAttribute.table, null, new LitterAttribute(
-                    "Comment", "freeformText").addNew());
+            insertAttributeValue(new LitterAttributeValue(stateID, 10, "AK"));
+            insertAttributeValue(new LitterAttributeValue(stateID, 20, "AL"));
+            insertAttributeValue(new LitterAttributeValue(stateID, 30, "AR"));
+            insertAttributeValue(new LitterAttributeValue(stateID, 40, "AZ"));
+            insertAttributeValue(new LitterAttributeValue(stateID, 50, "IA"));
+            insertAttributeValue(new LitterAttributeValue(stateID, 60, "IL"));
+            insertAttributeValue(new LitterAttributeValue(stateID, 70, "IN"));
+            insertAttributeValue(new LitterAttributeValue(stateID, 80, "NJ"));
+            insertAttributeValue(new LitterAttributeValue(stateID, 90, "NM"));
+            insertAttributeValue(new LitterAttributeValue(stateID, 100, "NY"));
         }
 
-        private void createAddressClass() throws IOException {
-            long addressClassID = mDb.insert(LitterClass.table, null,
-                    new LitterClass(
-                            "Address").addNew());
+        private void createPersonClass() throws IOException {
+            long personClassID = insertClass(new LitterClass("Person"));
 
-            long address1ID = mDb.insert(LitterAttribute.table, null,
-                    new LitterAttribute(
-                            "Address1", "freeformText").addNew());
-            mDb.insert(LitterClassAttribute.table, null,
-                    new LitterClassAttribute(
-                            addressClassID, 10, null, address1ID, "Address 1").addNew());
+            LitterClass address = getClass("address");
 
-            long address2ID = mDb.insert(LitterAttribute.table, null,
-                    new LitterAttribute("Address2", "freeformText").addNew());
-            mDb.insert(LitterClassAttribute.table, null,
-                    new LitterClassAttribute(addressClassID, 20, null, address2ID, "Address 2")
-                            .addNew());
+            long firstNameID = insertAttribute(new LitterAttribute("FirstName", "freeformText"));
+            long middleNameID = insertAttribute(new LitterAttribute("MiddleName", "freeformText"));
+            long lastNameID = insertAttribute(new LitterAttribute("LastName", "freeformText"));
 
-            long address3ID = mDb.insert(LitterAttribute.table, null,
-                    new LitterAttribute("Address3", "freeformText").addNew());
-            mDb.insert(LitterClassAttribute.table, null,
-                    new LitterClassAttribute(addressClassID, 30, null, address3ID, "Address 3")
-                            .addNew());
+            insertClassAttribute(new LitterClassAttribute(personClassID, 10, null, firstNameID,
+                    "First Name"));
+            insertClassAttribute(new LitterClassAttribute(personClassID, 20, null, middleNameID,
+                    "Middle Name"));
+            insertClassAttribute(new LitterClassAttribute(personClassID, 30, null, lastNameID,
+                    "Last Name"));
+            insertClassAttribute(new LitterClassAttribute(personClassID, 40, address.getId(), null,
+                    "Home Address"));
+        }
 
-            long cityID = mDb.insert(LitterAttribute.table, null,
-                    new LitterAttribute("City", "freeformText").addNew());
-            mDb.insert(LitterClassAttribute.table, null,
-                    new LitterClassAttribute(addressClassID, 40, null, cityID, "City").addNew());
+        private void createGeneralAttributes() throws IOException {
+            // generic attributes - Dates
+            insertAttribute(new LitterAttribute("StartDate", "date"));
+            insertAttribute(new LitterAttribute("EndDate", "date"));
+            insertAttribute(new LitterAttribute("BirthDate", "date"));
 
-            long stateID = mDb.insert(LitterAttribute.table, null,
-                    new LitterAttribute("State", "enumText").addNew());
-            mDb.insert(LitterClassAttribute.table, null,
-                    new LitterClassAttribute(addressClassID, 50, null, stateID, "State").addNew());
-
-            mDb.insert(LitterAttributeValue.table, null,
-                    new LitterAttributeValue(stateID, 10, "AK").addNew());
-            mDb.insert(LitterAttributeValue.table, null,
-                    new LitterAttributeValue(stateID, 20, "AL").addNew());
-            mDb.insert(LitterAttributeValue.table, null,
-                    new LitterAttributeValue(stateID, 30, "AR").addNew());
-            mDb.insert(LitterAttributeValue.table, null,
-                    new LitterAttributeValue(stateID, 40, "AZ").addNew());
-            mDb.insert(LitterAttributeValue.table, null,
-                    new LitterAttributeValue(stateID, 50, "IA").addNew());
-            mDb.insert(LitterAttributeValue.table, null,
-                    new LitterAttributeValue(stateID, 60, "IL").addNew());
-            mDb.insert(LitterAttributeValue.table, null,
-                    new LitterAttributeValue(stateID, 70, "IN").addNew());
-            mDb.insert(LitterAttributeValue.table, null,
-                    new LitterAttributeValue(stateID, 80, "NJ").addNew());
-            mDb.insert(LitterAttributeValue.table, null,
-                    new LitterAttributeValue(stateID, 90, "NM").addNew());
-            mDb.insert(LitterAttributeValue.table, null,
-                    new LitterAttributeValue(stateID, 100, "NY").addNew());
-
-            long zipID = mDb.insert(LitterAttribute.table, null,
-                    new LitterAttribute("Zip", "freeformText").addNew());
-            mDb.insert(LitterClassAttribute.table, null,
-                    new LitterClassAttribute(addressClassID, 60, null, zipID, "Zip Code").addNew());
+            // generic attributes - General
+            insertAttribute(new LitterAttribute("Comment", "freeformText"));
         }
     }
 }

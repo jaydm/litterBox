@@ -1,95 +1,105 @@
+
 package net.jnwd.litterBox.data;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 
 public class LitterAttribute {
-	public static final String table = "litterAttribute";
+    public static final String table = "litterAttribute";
 
-	public static final String column_ID = "_id";
-	public static final String column_Description = "description";
-	public static final String column_Type = "type";
+    public static final String column_ID = "_id";
+    public static final String column_Description = "description";
+    public static final String column_Type = "type";
 
-	public static final String[][] columns = {
-		{
-			column_ID, "integer"
-		},
-		{
-			column_Description, "text"
-		},
-		{
-			column_Type, "text"
-		}
-	};
+    public static final String[][] columns = {
+            {
+                    column_ID, "integer"
+            },
+            {
+                    column_Description, "text"
+            },
+            {
+                    column_Type, "text"
+            }
+    };
 
-	public static String[] allColumns = {
-		column_ID,
-		column_Description,
-		column_Type
-	};
+    public static String[] allColumns = {
+            column_ID,
+            column_Description,
+            column_Type
+    };
 
-	public static final String showColumn = column_Description;
+    public static final String showColumn = column_Description;
 
-	private Long id;
-	private String description;
-	private String type;
+    private Long id;
+    private String description;
+    private String type;
 
-	public LitterAttribute() {
-		super();
-	}
+    public LitterAttribute() {
+        super();
+    }
 
-	public LitterAttribute(String desc, String typ) {
-		this();
+    public LitterAttribute(String desc, String typ) {
+        this();
 
-		description = desc;
-		type = typ;
-	}
+        description = desc;
+        type = typ;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public LitterAttribute(Cursor cursor) {
+        this();
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+        id = cursor.getLong(cursor.getColumnIndex(column_ID));
+        description = cursor.getString(cursor.getColumnIndex(column_Description));
+        type = cursor.getString(cursor.getColumnIndex(column_Type));
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public static String createCommand() {
-		String command = "Create table " + LitterAttribute.table + " (";
+    public String getType() {
+        return type;
+    }
 
-		for (String[] column : columns) {
-			if (column[0].equalsIgnoreCase("_id")) {
-				command += "_id integer PRIMARY KEY autoincrement";
-			} else {
-				command += ", " + column[0] + " " + column[1];
-			}
-		}
+    public void setType(String type) {
+        this.type = type;
+    }
 
-		command += ");";
+    public static String createCommand() {
+        String command = "Create table " + LitterAttribute.table + " (";
 
-		return command;
-	}
+        for (String[] column : columns) {
+            if (column[0].equalsIgnoreCase("_id")) {
+                command += "_id integer PRIMARY KEY autoincrement";
+            } else {
+                command += ", " + column[0] + " " + column[1];
+            }
+        }
 
-	public ContentValues addNew() {
-		ContentValues initialValues = new ContentValues();
+        command += ");";
 
-		initialValues.put(columns[1][0], description);
-		initialValues.put(columns[2][0], type);
+        return command;
+    }
 
-		return initialValues;
-	}
+    public ContentValues addNew() {
+        ContentValues initialValues = new ContentValues();
+
+        initialValues.put(columns[1][0], description);
+        initialValues.put(columns[2][0], type);
+
+        return initialValues;
+    }
 }

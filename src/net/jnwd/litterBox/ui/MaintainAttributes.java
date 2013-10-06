@@ -314,7 +314,7 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
 
                 Log.i(TAG, "Create a cursor of all attributes...");
 
-                Cursor attributeCursor = activity.getDbHelper().getAttributeList();
+                Cursor attributeCursor = activity.getDbHelper().getAttributeListCursor();
 
                 Log.i(TAG, "Cursor is " + (attributeCursor == null ? "null" : "not null"));
 
@@ -345,19 +345,18 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position,
                             long id) {
-                        ((MaintainAttributes) getActivity()).setSelectedAttributeID(id);
+                        MaintainAttributes activity = ((MaintainAttributes) getActivity());
 
-                        Cursor currentAttribute = ((MaintainAttributes) getActivity())
-                                .getDbHelper().getAttribute(id);
+                        activity.setSelectedAttributeID(id);
 
-                        TextView showType = (TextView) ((MaintainAttributes) getActivity())
+                        LitterAttribute currentAttribute = activity.getDbHelper().getAttribute(id);
+
+                        TextView showType = (TextView) activity
                                 .findViewById(R.id.maAttributeTypeLabel);
 
                         String label = getResources().getString(R.string.ma_attribute_type_label);
 
-                        showType.setText(label + " (currently: "
-                                + currentAttribute.getString(currentAttribute
-                                        .getColumnIndex(LitterAttribute.column_Type)) + ")");
+                        showType.setText(label + " (currently: " + currentAttribute.getType() + ")");
                     }
 
                     @Override
@@ -444,7 +443,7 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
 
         Log.i(TAG, "Create a cursor of all attributes...");
 
-        Cursor attributeCursor = getDbHelper().getAttributeList();
+        Cursor attributeCursor = getDbHelper().getAttributeListCursor();
 
         Log.i(TAG, "Cursor is " + (attributeCursor == null ? "null" : "not null"));
 
@@ -476,15 +475,13 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 setSelectedAttributeID(id);
 
-                Cursor currentAttribute = getDbHelper().getAttribute(id);
+                LitterAttribute currentAttribute = getDbHelper().getAttribute(id);
 
                 TextView showType = (TextView) findViewById(R.id.maAttributeTypeLabel);
 
                 String label = getResources().getString(R.string.ma_attribute_type_label);
 
-                showType.setText(label + " (currently: "
-                        + currentAttribute.getString(currentAttribute
-                                .getColumnIndex(LitterAttribute.column_Type)) + ")");
+                showType.setText(label + " (currently: " + currentAttribute.getType() + ")");
             }
 
             @Override
@@ -509,16 +506,11 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
             return;
         }
 
-        Cursor attributeCursor = getDbHelper().getAttribute(attributeID);
+        LitterAttribute attribute = getDbHelper().getAttribute(attributeID);
 
-        String attributeDescription = attributeCursor.getString(attributeCursor
-                .getColumnIndex(LitterAttribute.column_Description));
+        Log.i(TAG, "Setting display value of attribute name to: " + attribute.getDescription());
 
-        Log.i(TAG, "Setting display value of attribute name to: " + attributeDescription);
-
-        boolean isEnumerated = attributeCursor.getString(
-                attributeCursor.getColumnIndex(LitterAttribute.column_Type))
-                .toLowerCase(Locale.getDefault())
+        boolean isEnumerated = attribute.getType().toLowerCase(Locale.getDefault())
                 .startsWith("enum");
 
         EditText addValue = (EditText) findViewById(R.id.maAttributeAddValue);
@@ -532,9 +524,9 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
 
         TextView description = (TextView) findViewById(R.id.maAttributeDescShow);
 
-        description.setText(attributeDescription);
+        description.setText(attribute.getDescription());
 
-        Cursor valueCursor = dbHelper.getAttributeValues(attributeID);
+        Cursor valueCursor = dbHelper.getAttributeValuesCursor(attributeID);
 
         Log.i(TAG, "Got the cursor? "
                 + (valueCursor == null ? "Null!?!?!?" : "Cursor Okay!"));

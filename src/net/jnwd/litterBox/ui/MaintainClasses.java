@@ -106,15 +106,12 @@ public class MaintainClasses extends LitterBoxActivity implements ActionBar.TabL
                     case 1:
                         long classID = getSelectedClass();
 
-                        Cursor cursor = null;
-
                         if (classID != 0) {
-                            cursor = dbHelper.getClass(classID);
+                            LitterClass selectedClass = dbHelper.getClass(classID);
 
                             TextView classDesc = (TextView) findViewById(R.id.mcClassDescShow);
 
-                            classDesc.setText(cursor.getString(cursor
-                                    .getColumnIndex(LitterClass.column_Description)));
+                            classDesc.setText(selectedClass.getDescription());
 
                             fillClassAttributes(classID);
                         }
@@ -364,7 +361,7 @@ public class MaintainClasses extends LitterBoxActivity implements ActionBar.TabL
     }
 
     private void fillClasses() {
-        Cursor classCursor = dbHelper.getClassList();
+        Cursor classCursor = dbHelper.getClassListCursor();
 
         Spinner classes = (Spinner) findViewById(R.id.mcClassID);
 
@@ -405,7 +402,7 @@ public class MaintainClasses extends LitterBoxActivity implements ActionBar.TabL
     }
 
     private void fillAddClasses() {
-        Cursor classCursor = dbHelper.getClassList();
+        Cursor classCursor = dbHelper.getClassListCursor();
 
         Spinner addClasses = (Spinner) findViewById(R.id.mcAddClass);
 
@@ -425,7 +422,7 @@ public class MaintainClasses extends LitterBoxActivity implements ActionBar.TabL
     }
 
     private void fillAddAttributes() {
-        Cursor attributeCursor = dbHelper.getAttributeList();
+        Cursor attributeCursor = dbHelper.getAttributeListCursor();
 
         Spinner attributes = (Spinner) findViewById(R.id.mcAddAttribute);
 
@@ -449,7 +446,7 @@ public class MaintainClasses extends LitterBoxActivity implements ActionBar.TabL
 
         Log.i(TAG, "Calling getClassAttributes...");
 
-        Cursor classAttributeCursor = dbHelper.getClassAttributes(classID);
+        Cursor caCursor = dbHelper.getClassAttributesCursor(classID);
 
         Log.i(TAG, "Creating a list to hold the class attributes...");
 
@@ -457,51 +454,37 @@ public class MaintainClasses extends LitterBoxActivity implements ActionBar.TabL
 
         Log.i(TAG, "Moving the cursor up to the beginning of the list...");
 
-        Long classAttributeClassID;
-        Long classAttributeAttributeID;
+        Long caClassID;
+        Long caAttributeID;
         String labelText;
 
         Log.i(TAG, "Beginning to spin through the classAttribute cursor...");
 
-        while (!classAttributeCursor.isAfterLast()) {
-            classAttributeClassID = classAttributeCursor
-                    .getLong(classAttributeCursor
-                            .getColumnIndex(LitterClassAttribute.column_ClassID));
-            classAttributeAttributeID = classAttributeCursor
-                    .getLong(classAttributeCursor
-                            .getColumnIndex(LitterClassAttribute.column_AttributeID));
-            labelText = classAttributeCursor.getString(classAttributeCursor
-                    .getColumnIndex(LitterClassAttribute.column_Label));
+        while (!caCursor.isAfterLast()) {
+            LitterClassAttribute ca = new LitterClassAttribute(caCursor);
 
-            Log.i(TAG, "Try to grab the sub-class (" + classAttributeClassID
-                    + ")...");
+            caClassID = ca.getClassID();
+            caAttributeID = ca.getAttributeID();
 
-            if ((classAttributeClassID != null) && (classAttributeClassID != 0)) {
-                Cursor showClass = dbHelper.getClass(classAttributeClassID);
+            labelText = ca.getLabel();
 
-                classAttributes
-                        .add(labelText
-                                + " (c): "
-                                + showClass.getString(showClass
-                                        .getColumnIndex(LitterClass.column_Description)));
+            if ((caClassID != null) && (caClassID != 0)) {
+                Log.i(TAG, "Try to grab the sub-class (" + caClassID + ")...");
+
+                LitterClass showClass = dbHelper.getClass(caClassID);
+
+                classAttributes.add(labelText + " (c): " + showClass.getDescription());
+            } else {
+                Log.i(TAG, "Try to grab the sub-attribute (" + caAttributeID + ")...");
+
+                if ((caAttributeID != null) && (caAttributeID != 0)) {
+                    LitterAttribute showAttribute = dbHelper.getAttribute(caAttributeID);
+
+                    classAttributes.add(labelText + " (a): " + showAttribute.getDescription());
+                }
             }
 
-            Log.i(TAG, "Try to grab the sub-attribute ("
-                    + classAttributeAttributeID + ")...");
-
-            if ((classAttributeAttributeID != null)
-                    && (classAttributeAttributeID != 0)) {
-                Cursor showAttribute = dbHelper
-                        .getAttribute(classAttributeAttributeID);
-
-                classAttributes
-                        .add(labelText
-                                + " (a): "
-                                + showAttribute.getString(showAttribute
-                                        .getColumnIndex(LitterAttribute.column_Description)));
-            }
-
-            classAttributeCursor.moveToNext();
+            caCursor.moveToNext();
         }
 
         Log.i(TAG, "Create the array adapter based on the array list...");
