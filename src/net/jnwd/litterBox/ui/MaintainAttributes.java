@@ -526,7 +526,7 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
 
         description.setText(attribute.getDescription());
 
-        Cursor valueCursor = dbHelper.getAttributeValuesCursor(attributeID);
+        Cursor valueCursor = dbHelper.getAttributeValues(attributeID);
 
         Log.i(TAG, "Got the cursor? "
                 + (valueCursor == null ? "Null!?!?!?" : "Cursor Okay!"));

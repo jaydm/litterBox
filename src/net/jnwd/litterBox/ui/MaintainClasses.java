@@ -446,7 +446,7 @@ public class MaintainClasses extends LitterBoxActivity implements ActionBar.TabL
 
         Log.i(TAG, "Calling getClassAttributes...");
 
-        Cursor caCursor = dbHelper.getClassAttributesCursor(classID);
+        Cursor caCursor = dbHelper.getClassAttributes(classID);
 
         Log.i(TAG, "Creating a list to hold the class attributes...");
 

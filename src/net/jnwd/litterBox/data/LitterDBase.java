@@ -44,10 +44,6 @@ public class LitterDBase {
         return mHelper.getClassListCursor();
     }
 
-    public Cursor getClassCursor(Long classID) {
-        return mHelper.getClassCursor(classID);
-    }
-
     public LitterClass getClass(Long classID) {
         return mHelper.getClass(classID);
     }
@@ -60,10 +56,6 @@ public class LitterDBase {
         return mHelper.getAttributeListCursor();
     }
 
-    public Cursor getAttributeCursor(Long attributeID) {
-        return mHelper.getAttributeCursor(attributeID);
-    }
-
     public LitterAttribute getAttribute(Long attributeID) {
         return mHelper.getAttribute(attributeID);
     }
@@ -72,12 +64,16 @@ public class LitterDBase {
         return mHelper.getAttribute(attributeName);
     }
 
-    public Cursor getAttributeValuesCursor(Long attributeID) {
+    public Cursor getClassAttributes(Long classID) {
+        return mHelper.getClassAttributes(classID);
+    }
+
+    public Cursor getAttributeValues(Long attributeID) {
         return mHelper.getAttributeValuesCursor(attributeID);
     }
 
-    public Cursor getClassAttributesCursor(Long classID) {
-        return mHelper.getClassAttributesCursor(classID);
+    public LitterAttributeValue getAttributeValue(Long valueID) {
+        return mHelper.getAttributeValue(valueID);
     }
 
     public long insertClass(LitterClass clazz) {
@@ -168,20 +164,6 @@ public class LitterDBase {
             return mCursor;
         }
 
-        public Cursor getClassCursor(Long classID) {
-            Cursor cursor = mDb.query(LitterClass.table, LitterClass.allColumns,
-                    LitterClass.column_ID + " = " + classID.toString(), null, null, null, null,
-                    null);
-
-            if (cursor == null) {
-                return null;
-            }
-
-            cursor.moveToFirst();
-
-            return cursor;
-        }
-
         public LitterClass getClass(Long classID) {
             Cursor cursor = mDb.query(LitterClass.table, LitterClass.allColumns,
                     LitterClass.column_ID + " = " + classID.toString(), null, null, null, null,
@@ -223,20 +205,6 @@ public class LitterDBase {
             return mCursor;
         }
 
-        public Cursor getAttributeCursor(Long attributeID) {
-            Cursor cursor = mDb.query(LitterAttribute.table, LitterAttribute.allColumns,
-                    LitterAttribute.column_ID + " = "
-                            + attributeID.toString(), null, null, null, null, null);
-
-            if (cursor == null) {
-                return null;
-            }
-
-            cursor.moveToFirst();
-
-            return cursor;
-        }
-
         public LitterAttribute getAttribute(Long attributeID) {
             Cursor cursor = mDb.query(LitterAttribute.table, LitterAttribute.allColumns,
                     LitterAttribute.column_ID + " = "
@@ -266,6 +234,21 @@ public class LitterDBase {
             return new LitterAttribute(cursor);
         }
 
+        public Cursor getClassAttributes(Long classID) {
+            Cursor cursor = mDb.query(LitterClassAttribute.table, LitterClassAttribute.allColumns,
+                    "parentID = " + classID.toString(), null, null, null, null);
+
+            if (cursor == null) {
+                Log.i(TAG, "Null results set...Return null...");
+
+                return null;
+            }
+
+            cursor.moveToFirst();
+
+            return cursor;
+        }
+
         public Cursor getAttributeValuesCursor(Long attributeID) {
             Cursor cursor = mDb.query(LitterAttributeValue.table, LitterAttributeValue.allColumns,
                     "attributeID = " + attributeID.toString(), null, null, null, "sequence");
@@ -281,9 +264,10 @@ public class LitterDBase {
             return cursor;
         }
 
-        public Cursor getClassAttributesCursor(Long classID) {
-            Cursor cursor = mDb.query(LitterClassAttribute.table, LitterClassAttribute.allColumns,
-                    "parentID = " + classID.toString(), null, null, null, null);
+        public LitterAttributeValue getAttributeValue(Long valueID) {
+            Cursor cursor = mDb.query(LitterAttributeValue.table, LitterAttributeValue.allColumns,
+                    LitterAttributeValue.column_ID + " = " + valueID.toString(), null, null, null,
+                    null);
 
             if (cursor == null) {
                 Log.i(TAG, "Null results set...Return null...");
@@ -293,7 +277,7 @@ public class LitterDBase {
 
             cursor.moveToFirst();
 
-            return cursor;
+            return new LitterAttributeValue(cursor);
         }
 
         public long insertClass(LitterClass clazz) {

@@ -1,109 +1,119 @@
+
 package net.jnwd.litterBox.data;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 
 public class LitterAttributeValue {
-	public static final String table = "litterAttributeValue";
+    public static final String table = "litterAttributeValue";
 
-	public static final String column_ID = "_id";
-	public static final String column_AttributeID = "attributeID";
-	public static final String column_Sequence = "sequence";
-	public static final String column_Value = "value";
+    public static final String column_ID = "_id";
+    public static final String column_AttributeID = "attributeID";
+    public static final String column_Sequence = "sequence";
+    public static final String column_Value = "value";
 
-	public static final String showColumn = "value";
+    public static final String showColumn = "value";
 
-	public static final String[][] columns = {
-		{
-			"_id", "integer"
-		},
-		{
-			"attributeID", "integer"
-		},
-		{
-			"sequence", "integer"
-		},
-		{
-			"value", "text"
-		}
-	};
+    public static final String[][] columns = {
+            {
+                    "_id", "integer"
+            },
+            {
+                    "attributeID", "integer"
+            },
+            {
+                    "sequence", "integer"
+            },
+            {
+                    "value", "text"
+            }
+    };
 
-	public static String[] allColumns = {
-		column_ID,
-		column_AttributeID,
-		column_Sequence,
-		column_Value
-	};
+    public static String[] allColumns = {
+            column_ID,
+            column_AttributeID,
+            column_Sequence,
+            column_Value
+    };
 
-	private Long id;
-	private Long attributeID;
-	private Long sequence;
-	private String value;
+    private Long id;
+    private Long attributeID;
+    private Long sequence;
+    private String value;
 
-	public LitterAttributeValue() {
-		super();
-	}
+    public LitterAttributeValue() {
+        super();
+    }
 
-	public LitterAttributeValue(Long attributeID, long sequence, String value) {
-		this.attributeID = attributeID;
-		this.sequence = sequence;
-		this.value = value;
-	}
+    public LitterAttributeValue(Long attributeID, long sequence, String value) {
+        this.attributeID = attributeID;
+        this.sequence = sequence;
+        this.value = value;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public LitterAttributeValue(Cursor cursor) {
+        id = cursor.getLong(cursor.getColumnIndex(column_ID));
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+        attributeID = cursor.getLong(cursor.getColumnIndex(column_AttributeID));
+        sequence = cursor.getLong(cursor.getColumnIndex(column_Sequence));
+        value = cursor.getString(cursor.getColumnIndex(column_Value));
+    }
 
-	public Long getAttributeID() {
-		return attributeID;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setAttributeID(Long attributeID) {
-		this.attributeID = attributeID;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public Long getSequence() {
-		return sequence;
-	}
+    public Long getAttributeID() {
+        return attributeID;
+    }
 
-	public void setSequence(Long sequence) {
-		this.sequence = sequence;
-	}
+    public void setAttributeID(Long attributeID) {
+        this.attributeID = attributeID;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public Long getSequence() {
+        return sequence;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setSequence(Long sequence) {
+        this.sequence = sequence;
+    }
 
-	public static String createCommand() {
-		String command = "Create table " + LitterAttributeValue.table + " (";
+    public String getValue() {
+        return value;
+    }
 
-		for (String[] column : columns) {
-			if (column[0].equalsIgnoreCase("_id")) {
-				command += "_id integer PRIMARY KEY autoincrement";
-			} else {
-				command += ", " + column[0] + " " + column[1];
-			}
-		}
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-		command += ");";
+    public static String createCommand() {
+        String command = "Create table " + LitterAttributeValue.table + " (";
 
-		return command;
-	}
+        for (String[] column : columns) {
+            if (column[0].equalsIgnoreCase("_id")) {
+                command += "_id integer PRIMARY KEY autoincrement";
+            } else {
+                command += ", " + column[0] + " " + column[1];
+            }
+        }
 
-	public ContentValues addNew() {
-		ContentValues initialValues = new ContentValues();
+        command += ");";
 
-		initialValues.put(columns[1][0], attributeID);
-		initialValues.put(columns[2][0], sequence);
-		initialValues.put(columns[3][0], value);
+        return command;
+    }
 
-		return initialValues;
-	}
+    public ContentValues addNew() {
+        ContentValues initialValues = new ContentValues();
+
+        initialValues.put(columns[1][0], attributeID);
+        initialValues.put(columns[2][0], sequence);
+        initialValues.put(columns[3][0], value);
+
+        return initialValues;
+    }
 }
