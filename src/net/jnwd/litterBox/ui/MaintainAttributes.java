@@ -7,10 +7,15 @@ import net.jnwd.litterBox.R;
 import net.jnwd.litterBox.base.LitterBoxActivity;
 import net.jnwd.litterBox.data.LitterAttribute;
 import net.jnwd.litterBox.data.LitterAttributeValue;
+import net.jnwd.litterBox.data.LitterClass;
 import net.jnwd.litterBox.data.LitterDBase;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.app.LoaderManager;
+import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -36,10 +41,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MaintainAttributes extends LitterBoxActivity implements ActionBar.TabListener {
+    protected final String Tag = "Maintain Attributes";
+
     private AttributePagerAdapter attributePager;
     private ViewPager mViewPager;
 
-    protected final String TAG = "Maintain Attributes";
     protected final int myLayout = R.layout.activity_maintain_attributes;
 
     public LitterDBase dbHelper;
@@ -70,7 +76,7 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
     }
 
     public void setSelectedAttributeID(long id) {
-        Log.i(TAG, "Setting the selected attributeID to: " + id);
+        Log.i(Tag, "Setting the selected attributeID to: " + id);
 
         selectedAttributeID = id;
     }
@@ -98,7 +104,7 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
             public void onPageSelected(int position) {
                 actionBar.setSelectedNavigationItem(position);
 
-                Log.i(TAG, "Moving to page: " + position);
+                Log.i(Tag, "Moving to page: " + position);
 
                 switch (position) {
                     case 0:
@@ -143,7 +149,7 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         mViewPager.setCurrentItem(tab.getPosition());
 
-        Log.i(TAG, "Selected tab is: " + tab.getPosition());
+        Log.i(Tag, "Selected tab is: " + tab.getPosition());
     }
 
     @Override
@@ -214,12 +220,21 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
     /**
      * A fragment that launches other parts of the demo application.
      */
-    public static class AttributeFragment extends Fragment {
-        private final String TAG = "maAttribute";
+    public static class AttributeFragment extends Fragment implements
+            LoaderManager.LoaderCallbacks<Cursor> {
+        private final String Tag = "maAttribute";
+
+        private LoaderManager.LoaderCallbacks<Cursor> mAttributeCallbacks;
+
+        private SimpleCursorAdapter mAllAttributesAdapter;
+        
+        private Context mContext;
 
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
+            
+            mContext = activity;
         }
 
         @Override
@@ -227,6 +242,7 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
             super.onCreate(bundle);
 
             if (bundle == null) {
+
             }
         }
 
@@ -250,7 +266,7 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
             saveAttribute.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i(TAG, "Grabbing the value of the spinner...");
+                    Log.i(Tag, "Grabbing the value of the spinner...");
 
                     Spinner attributeType = (Spinner) getActivity().findViewById(
                             R.id.maAttributeType);
@@ -258,7 +274,7 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
                     long typeID = attributeType.getSelectedItemId();
                     String typeDescription = attributeType.getSelectedItem().toString();
 
-                    Log.i(TAG,
+                    Log.i(Tag,
                             "Checking the description field to determine if this is a change to an existing attribute or a completely new one...");
 
                     EditText attributeDescription = (EditText) getActivity().findViewById(
@@ -267,18 +283,18 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
                     String description = attributeDescription.getText().toString();
 
                     if ("".equals(description)) {
-                        Log.i(TAG, "Updating the type of an existing attribute...");
+                        Log.i(Tag, "Updating the type of an existing attribute...");
 
                         if (typeID == 0) {
-                            Log.i(TAG, "No type selected...Don't change anything...");
+                            Log.i(Tag, "No type selected...Don't change anything...");
 
                             return;
                         }
                     } else {
-                        Log.i(TAG, "Adding a new attribute...");
+                        Log.i(Tag, "Adding a new attribute...");
 
                         if (typeID == 0) {
-                            Log.i(TAG, "No type selected...Don't add the new attribute...");
+                            Log.i(Tag, "No type selected...Don't add the new attribute...");
 
                             Toast.makeText(getActivity(), "You must select an attribute type",
                                     Toast.LENGTH_LONG).show();
@@ -293,7 +309,7 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
                                 .insertAttribute(newAttribute);
 
                         if (newAttributeID == 0) {
-                            Log.i(TAG, "Exception trying to add new attribute...");
+                            Log.i(Tag, "Exception trying to add new attribute...");
                         }
 
                         attributeDescription.setText("");
@@ -306,20 +322,13 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
             {
                 MaintainAttributes activity = (MaintainAttributes) getActivity();
 
-                Log.i(TAG, "Create reference to attribute spinner...");
+                Log.i(Tag, "Create reference to attribute spinner...");
 
                 Spinner attributeID = (Spinner) rootView.findViewById(R.id.maAttributeID);
 
-                Log.i(TAG, "Spinner is " + (attributeID == null ? "null" : "not null"));
+                Log.i(Tag, "Spinner is " + (attributeID == null ? "null" : "not null"));
 
-                Log.i(TAG, "Create a cursor of all attributes...");
-
-                Cursor attributeCursor = activity.getDbHelper().getAttributeListCursor();
-
-                Log.i(TAG, "Cursor is " + (attributeCursor == null ? "null" : "not null"));
-
-                Log.i(TAG,
-                        "Create from and to references to connect the cursor to the spinner...");
+                Log.i(Tag, "Create a cursor of all attributes...");
 
                 String[] from = {
                         LitterAttribute.showColumn
@@ -329,17 +338,17 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
                         android.R.id.text1
                 };
 
-                Log.i(TAG, "Create the cursor adapter...");
+                Log.i(Tag, "Create the cursor adapter...");
 
                 @SuppressWarnings("deprecation")
                 SimpleCursorAdapter attributeAdapter = new SimpleCursorAdapter(activity,
-                        android.R.layout.simple_spinner_item, attributeCursor, from, to);
+                        android.R.layout.simple_spinner_item, null, from, to);
 
-                Log.i(TAG, "Connect adapter to the spinner...");
+                Log.i(Tag, "Connect adapter to the spinner...");
 
                 attributeID.setAdapter(attributeAdapter);
 
-                Log.i(TAG, "Creating the itemSelectedListener...");
+                Log.i(Tag, "Creating the itemSelectedListener...");
 
                 attributeID.setOnItemSelectedListener(new OnItemSelectedListener() {
                     @Override
@@ -371,11 +380,41 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
             return rootView;
         }
 
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            CursorLoader loader;
+            
+            switch (id) {
+                case LitterBoxActivity.Loader_Entity_Data:
+
+                    break;
+                case LitterBoxActivity.Loader_Class_Data:
+                    loader = new CursorLoader(
+                            mContext,
+                            LitterClass.table,
+                            LitterClass.allColumns,
+                            null,
+                            null,
+                            null
+                            );
+                    
+                    break;
+                case LitterBoxActivity.Loader_Class_Attribute_Data:
+                    break;
+                case LitterBoxActivity.Loader_Attribute_Data:
+                    break;
+                case LitterBoxActivity.Loader_Attribute_Value_Data:
+                    break;
+                default:
+            }
+
+            Cursor attributeCursor = activity.getDbHelper().getAttributeListCursor();
+        }
     }
 
     public static class ValueFragment extends Fragment {
         @SuppressWarnings("unused")
-        private final String TAG = "maValue";
+        private final String Tag = "maValue";
 
         @Override
         public void onAttach(Activity activity) {
@@ -435,19 +474,19 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
     }
 
     private void fillAttributes() {
-        Log.i(TAG, "Create reference to attribute spinner...");
+        Log.i(Tag, "Create reference to attribute spinner...");
 
         Spinner attributeID = (Spinner) findViewById(R.id.maAttributeID);
 
-        Log.i(TAG, "Spinner is " + (attributeID == null ? "null" : "not null"));
+        Log.i(Tag, "Spinner is " + (attributeID == null ? "null" : "not null"));
 
-        Log.i(TAG, "Create a cursor of all attributes...");
+        Log.i(Tag, "Create a cursor of all attributes...");
 
         Cursor attributeCursor = getDbHelper().getAttributeListCursor();
 
-        Log.i(TAG, "Cursor is " + (attributeCursor == null ? "null" : "not null"));
+        Log.i(Tag, "Cursor is " + (attributeCursor == null ? "null" : "not null"));
 
-        Log.i(TAG,
+        Log.i(Tag,
                 "Create from and to references to connect the cursor to the spinner...");
 
         String[] from = {
@@ -458,17 +497,17 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
                 android.R.id.text1
         };
 
-        Log.i(TAG, "Create the cursor adapter...");
+        Log.i(Tag, "Create the cursor adapter...");
 
         @SuppressWarnings("deprecation")
         SimpleCursorAdapter attributeAdapter = new SimpleCursorAdapter(this,
                 android.R.layout.simple_spinner_item, attributeCursor, from, to);
 
-        Log.i(TAG, "Connect adapter to the spinner...");
+        Log.i(Tag, "Connect adapter to the spinner...");
 
         attributeID.setAdapter(attributeAdapter);
 
-        Log.i(TAG, "Creating the itemSelectedListener...");
+        Log.i(Tag, "Creating the itemSelectedListener...");
 
         attributeID.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
@@ -496,11 +535,11 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
     private void fillValues() {
         ListView values = (ListView) findViewById(R.id.maAttributeValues);
 
-        Log.i(TAG, "Loading the stored values for the attribute...");
+        Log.i(Tag, "Loading the stored values for the attribute...");
 
         long attributeID = getSelectedAttributeID();
 
-        Log.i(TAG, "Attribute ID (used to show values): " + attributeID);
+        Log.i(Tag, "Attribute ID (used to show values): " + attributeID);
 
         if (attributeID <= 0) {
             return;
@@ -508,7 +547,7 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
 
         LitterAttribute attribute = getDbHelper().getAttribute(attributeID);
 
-        Log.i(TAG, "Setting display value of attribute name to: " + attribute.getDescription());
+        Log.i(Tag, "Setting display value of attribute name to: " + attribute.getDescription());
 
         boolean isEnumerated = attribute.getType().toLowerCase(Locale.getDefault())
                 .startsWith("enum");
@@ -528,7 +567,7 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
 
         Cursor valueCursor = dbHelper.getAttributeValues(attributeID);
 
-        Log.i(TAG, "Got the cursor? "
+        Log.i(Tag, "Got the cursor? "
                 + (valueCursor == null ? "Null!?!?!?" : "Cursor Okay!"));
 
         String[] from = {
@@ -539,13 +578,13 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
                 android.R.id.text1
         };
 
-        Log.i(TAG, "Create the cursor adapter...");
+        Log.i(Tag, "Create the cursor adapter...");
 
         @SuppressWarnings("deprecation")
         SimpleCursorAdapter valueAdapter = new SimpleCursorAdapter(this,
                 android.R.layout.simple_list_item_1, valueCursor, from, to);
 
-        Log.i(TAG, "Connect adapter to the spinner...");
+        Log.i(Tag, "Connect adapter to the spinner...");
 
         values.setAdapter(valueAdapter);
 

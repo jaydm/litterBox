@@ -30,6 +30,12 @@
             android:name="net.jnwd.litterBox.ui.MaintainEntities"
             android:label="@string/title_activity_maintain_entities" >
         </activity>
+
+        <provider
+            android:name="net.jnwd.litterBox.contentProvider.Box"
+            android:authorities="net.jnwd.litterBox.contentProvider"
+            android:exported="true" >
+        </provider>
     </application>
 
 </manifest>
