@@ -5,6 +5,8 @@ import java.util.Locale;
 
 import net.jnwd.litterBox.R;
 import net.jnwd.litterBox.base.LitterBoxActivity;
+import net.jnwd.litterBox.base.LitterBoxFragment;
+import net.jnwd.litterBox.contentProvider.BoxContract;
 import net.jnwd.litterBox.data.LitterAttribute;
 import net.jnwd.litterBox.data.LitterAttributeValue;
 import net.jnwd.litterBox.data.LitterClass;
@@ -220,8 +222,7 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
     /**
      * A fragment that launches other parts of the demo application.
      */
-    public static class AttributeFragment extends Fragment implements
-            LoaderManager.LoaderCallbacks<Cursor> {
+    public static class AttributeFragment extends LitterBoxFragment {
         private final String Tag = "maAttribute";
 
         private LoaderManager.LoaderCallbacks<Cursor> mAttributeCallbacks;
@@ -391,7 +392,7 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
                 case LitterBoxActivity.Loader_Class_Data:
                     loader = new CursorLoader(
                             mContext,
-                            LitterClass.table,
+                            BoxContract.Class.Content_Uri,
                             LitterClass.allColumns,
                             null,
                             null,
@@ -407,8 +408,13 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
                     break;
                 default:
             }
-
-            Cursor attributeCursor = activity.getDbHelper().getAttributeListCursor();
+        }
+        
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+            switch (loader.getId()) {
+                case 
+            }
         }
     }
 
