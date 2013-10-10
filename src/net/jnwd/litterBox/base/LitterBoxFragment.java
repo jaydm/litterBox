@@ -1,8 +1,8 @@
 
 package net.jnwd.litterBox.base;
 
+import net.jnwd.litterBox.contentProvider.Box;
 import net.jnwd.litterBox.contentProvider.BoxContract;
-import net.jnwd.litterBox.data.LitterClass;
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.Context;
@@ -13,8 +13,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 public class LitterBoxFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private final String Tag = "lbFragment";
-
     private LoaderManager.LoaderCallbacks<Cursor> mCallbacks;
 
     private Context mContext;
@@ -33,6 +31,8 @@ public class LitterBoxFragment extends Fragment implements LoaderManager.LoaderC
         if (bundle == null) {
 
         }
+
+        mCallbacks = this;
     }
 
     public LitterBoxFragment() {
@@ -44,27 +44,77 @@ public class LitterBoxFragment extends Fragment implements LoaderManager.LoaderC
         CursorLoader loader = null;
 
         switch (id) {
-            case LitterBoxActivity.Loader_Entity_Data:
-
-                break;
-            case LitterBoxActivity.Loader_Class_Data:
+            case Box.Attribute_List:
                 loader = new CursorLoader(
                         mContext,
-                        BoxContract.Class.Content_Uri,
-                        LitterClass.allColumns,
+                        BoxContract.Attribute.Content_Uri,
+                        BoxContract.Attribute.allColumns,
                         null,
                         null,
                         null
                         );
 
                 break;
-            case LitterBoxActivity.Loader_Class_Attribute_Data:
+            case Box.Attribute_ID:
+
                 break;
-            case LitterBoxActivity.Loader_Attribute_Data:
+            case Box.Attribute_Value_List:
+
                 break;
-            case LitterBoxActivity.Loader_Attribute_Value_Data:
+
+            case Box.Attribute_Value_ID:
+
+                break;
+            case Box.Class_List:
+                loader = new CursorLoader(
+                        mContext,
+                        BoxContract.Class.Content_Uri,
+                        BoxContract.Class.allColumns,
+                        null,
+                        null,
+                        null
+                        );
+
+                break;
+            case Box.Class_ID:
+
+                break;
+            case Box.Class_Attribute_List:
+                loader = new CursorLoader(
+                        mContext,
+                        BoxContract.ClassAttribute.Content_Uri,
+                        BoxContract.ClassAttribute.allColumns,
+                        null,
+                        null,
+                        null
+                        );
+
+                break;
+            case Box.Class_Attribute_ID:
+
+                break;
+            case Box.Entity_List:
+                loader = new CursorLoader(
+                        mContext,
+                        BoxContract.Entity.Content_Uri,
+                        BoxContract.Entity.allColumns,
+                        null,
+                        null,
+                        null
+                        );
+
+                break;
+            case Box.Entity_ID:
+
+                break;
+            case Box.Entity_Attribute_List:
+
+                break;
+            case Box.Entity_Attribute_ID:
+
                 break;
             default:
+                throw new IllegalArgumentException("Unsupported Loader ID: " + id);
         }
 
         return loader;
@@ -72,11 +122,95 @@ public class LitterBoxFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        int id = loader.getId();
 
+        switch (id) {
+            case Box.Attribute_List:
+
+                break;
+            case Box.Attribute_ID:
+
+                break;
+            case Box.Attribute_Value_List:
+
+                break;
+
+            case Box.Attribute_Value_ID:
+
+                break;
+            case Box.Class_List:
+
+                break;
+            case Box.Class_ID:
+
+                break;
+            case Box.Class_Attribute_List:
+
+                break;
+            case Box.Class_Attribute_ID:
+
+                break;
+            case Box.Entity_List:
+
+                break;
+            case Box.Entity_ID:
+
+                break;
+            case Box.Entity_Attribute_List:
+
+                break;
+            case Box.Entity_Attribute_ID:
+
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported Loader ID: " + id);
+        }
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> cursor) {
+    public void onLoaderReset(Loader<Cursor> loader) {
+        int id = loader.getId();
 
+        switch (id) {
+            case Box.Attribute_List:
+
+                break;
+            case Box.Attribute_ID:
+
+                break;
+            case Box.Attribute_Value_List:
+
+                break;
+
+            case Box.Attribute_Value_ID:
+
+                break;
+            case Box.Class_List:
+
+                break;
+            case Box.Class_ID:
+
+                break;
+            case Box.Class_Attribute_List:
+
+                break;
+            case Box.Class_Attribute_ID:
+
+                break;
+            case Box.Entity_List:
+
+                break;
+            case Box.Entity_ID:
+
+                break;
+            case Box.Entity_Attribute_List:
+
+                break;
+            case Box.Entity_Attribute_ID:
+
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported Loader ID: " + id);
+        }
     }
 }

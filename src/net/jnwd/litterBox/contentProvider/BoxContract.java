@@ -267,6 +267,12 @@ public final class BoxContract {
                 }
         };
 
+        public static final String[] allColumns = {
+                column_ID,
+                column_Description,
+                column_ClassID
+        };
+
         public static final String showColumn = "description";
 
         public static final String defaultSortOrder = column_Description;
@@ -304,6 +310,7 @@ public final class BoxContract {
         public static final String column_AttributeID = "attributeID";
         public static final String column_ValueID = "valueID";
         public static final String column_ValueData = "valueData";
+
         public static final String[][] columns = {
                 {
                         column_ID, "integer"
@@ -320,6 +327,14 @@ public final class BoxContract {
                 {
                         column_ValueData, "text"
                 }
+        };
+
+        public static final String[] allColumns = {
+                column_ID,
+                column_EntityID,
+                column_AttributeID,
+                column_ValueID,
+                column_ValueData
         };
 
         public static final String showColumn = "valueData";
