@@ -46,6 +46,8 @@ public final class BoxContract {
 
         public static final String showColumn = column_Description;
 
+        public static final String defaultSortOrder = column_Description;
+
         public static String createCommand() {
             String command = "Create table " + table + " (";
 
@@ -103,6 +105,8 @@ public final class BoxContract {
 
         public static final String showColumn = "value";
 
+        public static final String defaultSortOrder = column_Sequence;
+
         public static String createCommand() {
             String command = "Create table " + table + " (";
 
@@ -149,6 +153,8 @@ public final class BoxContract {
         };
 
         public static final String showColumn = column_Description;
+
+        public static final String defaultSortOrder = column_Description;
 
         public static String createCommand() {
             String command = "Create table " + table + " (";
@@ -217,6 +223,8 @@ public final class BoxContract {
 
         public static final String showColumn = "description";
 
+        public static final String defaultSortOrder = column_Sequence;
+
         public static String createCommand() {
             String command = "Create table " + table + " (";
 
@@ -245,17 +253,23 @@ public final class BoxContract {
 
         public static final String table = "litterEntity";
 
+        public static final String column_ID = "_id";
+        public static final String column_Description = "description";
+        public static final String column_ClassID = "classID";
+
         public static final String[][] columns = {
                 {
-                        "_id", "integer"
+                        column_ID, "integer"
                 }, {
-                        "description", "text"
+                        column_Description, "text"
                 }, {
-                        "classID", "integer"
+                        column_ClassID, "integer"
                 }
         };
 
         public static final String showColumn = "description";
+
+        public static final String defaultSortOrder = column_Description;
 
         public static String createCommand() {
             String command = "Create table " + table + " (";
@@ -285,25 +299,32 @@ public final class BoxContract {
 
         public static final String table = "litterEntityAttribute";
 
+        public static final String column_ID = "_id";
+        public static final String column_EntityID = "entityID";
+        public static final String column_AttributeID = "attributeID";
+        public static final String column_ValueID = "valueID";
+        public static final String column_ValueData = "valueData";
         public static final String[][] columns = {
                 {
-                        "_id", "integer"
+                        column_ID, "integer"
                 },
                 {
-                        "entityID", "integer"
+                        column_EntityID, "integer"
                 },
                 {
-                        "attributeID", "integer"
+                        column_AttributeID, "integer"
                 },
                 {
-                        "valueID", "integer"
+                        column_ValueID, "integer"
                 },
                 {
-                        "valueData", "text"
+                        column_ValueData, "text"
                 }
         };
 
         public static final String showColumn = "valueData";
+
+        public static final String defaultSortOrder = column_AttributeID + ", " + column_ValueData;
 
         public static String createCommand() {
             String command = "Create table " + table + " (";

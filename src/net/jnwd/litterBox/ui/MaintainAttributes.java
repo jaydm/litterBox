@@ -6,18 +6,14 @@ import java.util.Locale;
 import net.jnwd.litterBox.R;
 import net.jnwd.litterBox.base.LitterBoxActivity;
 import net.jnwd.litterBox.base.LitterBoxFragment;
-import net.jnwd.litterBox.contentProvider.BoxContract;
 import net.jnwd.litterBox.data.LitterAttribute;
 import net.jnwd.litterBox.data.LitterAttributeValue;
-import net.jnwd.litterBox.data.LitterClass;
 import net.jnwd.litterBox.data.LitterDBase;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.app.LoaderManager;
 import android.content.Context;
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -228,13 +224,13 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
         private LoaderManager.LoaderCallbacks<Cursor> mAttributeCallbacks;
 
         private SimpleCursorAdapter mAllAttributesAdapter;
-        
+
         private Context mContext;
 
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
-            
+
             mContext = activity;
         }
 
@@ -379,42 +375,6 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
             }
 
             return rootView;
-        }
-
-        @Override
-        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            CursorLoader loader;
-            
-            switch (id) {
-                case LitterBoxActivity.Loader_Entity_Data:
-
-                    break;
-                case LitterBoxActivity.Loader_Class_Data:
-                    loader = new CursorLoader(
-                            mContext,
-                            BoxContract.Class.Content_Uri,
-                            LitterClass.allColumns,
-                            null,
-                            null,
-                            null
-                            );
-                    
-                    break;
-                case LitterBoxActivity.Loader_Class_Attribute_Data:
-                    break;
-                case LitterBoxActivity.Loader_Attribute_Data:
-                    break;
-                case LitterBoxActivity.Loader_Attribute_Value_Data:
-                    break;
-                default:
-            }
-        }
-        
-        @Override
-        public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-            switch (loader.getId()) {
-                case 
-            }
         }
     }
 
