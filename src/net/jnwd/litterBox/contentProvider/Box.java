@@ -1,6 +1,9 @@
 
 package net.jnwd.litterBox.contentProvider;
 
+import java.util.List;
+
+import net.jnwd.litterBox.data.LitterAttribute;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -11,8 +14,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
+import android.util.Pair;
 
 public class Box extends ContentProvider {
+    private static final String Tag = "box (ContentProvider)";
+
     public static final int Attribute_List = 1;
     public static final int Attribute_ID = 2;
     public static final int Attribute_Value_List = 11;
@@ -50,6 +57,8 @@ public class Box extends ContentProvider {
 
     @Override
     public boolean onCreate() {
+        Log.i(Tag, "Creating the content provider...");
+
         mHelper = new BoxOpenHelper(getContext());
 
         return true;
@@ -57,6 +66,8 @@ public class Box extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
+        Log.i(Tag, "Delete called for URI: " + uri.toString());
+
         SQLiteDatabase db = mHelper.getWritableDatabase();
 
         int delCount = 0;
@@ -168,6 +179,8 @@ public class Box extends ContentProvider {
 
     @Override
     public String getType(Uri uri) {
+        Log.i(Tag, "Get Type called for URI: " + uri.toString());
+
         switch (Uri_Matcher.match(uri)) {
             case Attribute_List:
                 return BoxContract.Attribute.Content_Type;
@@ -200,6 +213,8 @@ public class Box extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
+        Log.i(Tag, "Insert called for URI: " + uri.toString());
+
         SQLiteDatabase db = mHelper.getWritableDatabase();
 
         long id = 0;
@@ -247,11 +262,15 @@ public class Box extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] columns, String selection, String[] selectionArgs,
             String sortOrder) {
+        Log.i(Tag, "Query called for URI: " + uri.toString());
+
         SQLiteDatabase db = mHelper.getReadableDatabase();
         SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 
         switch (Uri_Matcher.match(uri)) {
             case Attribute_List:
+                Log.i(Tag, "Building the attribute list query...");
+
                 builder.setTables(BoxContract.Attribute.table);
 
                 if (TextUtils.isEmpty(sortOrder)) {
@@ -260,6 +279,8 @@ public class Box extends ContentProvider {
 
                 break;
             case Attribute_ID:
+                Log.i(Tag, "Building the attribute ID query...");
+
                 builder.setTables(BoxContract.Attribute.table);
 
                 builder.appendWhere(BoxContract.Attribute.column_ID + " = "
@@ -267,6 +288,8 @@ public class Box extends ContentProvider {
 
                 break;
             case Attribute_Value_List:
+                Log.i(Tag, "Building the attribute value list query...");
+
                 builder.setTables(BoxContract.AttributeValue.table);
 
                 builder.appendWhere(BoxContract.AttributeValue.column_AttributeID + " = "
@@ -278,6 +301,8 @@ public class Box extends ContentProvider {
 
                 break;
             case Attribute_Value_ID:
+                Log.i(Tag, "Building the attribute value ID query...");
+
                 builder.setTables(BoxContract.AttributeValue.table);
 
                 builder.appendWhere(BoxContract.AttributeValue.column_ID + " = "
@@ -285,6 +310,8 @@ public class Box extends ContentProvider {
 
                 break;
             case Class_List:
+                Log.i(Tag, "Building the class list query...");
+
                 builder.setTables(BoxContract.Class.table);
 
                 if (TextUtils.isEmpty(sortOrder)) {
@@ -293,6 +320,8 @@ public class Box extends ContentProvider {
 
                 break;
             case Class_ID:
+                Log.i(Tag, "Building the class ID query...");
+
                 builder.setTables(BoxContract.Class.table);
 
                 builder.appendWhere(BoxContract.Class.column_ID + " = "
@@ -300,6 +329,8 @@ public class Box extends ContentProvider {
 
                 break;
             case Class_Attribute_List:
+                Log.i(Tag, "Building the class attribute list query...");
+
                 builder.setTables(BoxContract.ClassAttribute.table);
 
                 builder.appendWhere(BoxContract.ClassAttribute.column_ClassID + " = "
@@ -311,6 +342,8 @@ public class Box extends ContentProvider {
 
                 break;
             case Class_Attribute_ID:
+                Log.i(Tag, "Building the class attribute ID query...");
+
                 builder.setTables(BoxContract.ClassAttribute.table);
 
                 builder.appendWhere(BoxContract.ClassAttribute.column_ID + " = "
@@ -318,6 +351,8 @@ public class Box extends ContentProvider {
 
                 break;
             case Entity_List:
+                Log.i(Tag, "Building the entity list query...");
+
                 builder.setTables(BoxContract.Entity.table);
 
                 if (TextUtils.isEmpty(sortOrder)) {
@@ -326,6 +361,8 @@ public class Box extends ContentProvider {
 
                 break;
             case Entity_ID:
+                Log.i(Tag, "Building the entity ID query...");
+
                 builder.setTables(BoxContract.Entity.table);
 
                 builder.appendWhere(BoxContract.Entity.column_ID + " = "
@@ -333,6 +370,8 @@ public class Box extends ContentProvider {
 
                 break;
             case Entity_Attribute_List:
+                Log.i(Tag, "Building the entity attribute list query...");
+
                 builder.setTables(BoxContract.EntityAttribute.table);
 
                 builder.appendWhere(BoxContract.EntityAttribute.column_EntityID + " = "
@@ -344,6 +383,8 @@ public class Box extends ContentProvider {
 
                 break;
             case Entity_Attribute_ID:
+                Log.i(Tag, "Building the entity attribute ID query...");
+
                 builder.setTables(BoxContract.EntityAttribute.table);
 
                 builder.appendWhere(BoxContract.EntityAttribute.column_ID + " = "
@@ -354,13 +395,54 @@ public class Box extends ContentProvider {
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
 
+        Log.i(Tag, "Querying table: " + builder.getTables());
+        Log.i(Tag, "Selection: " + selection);
+
+        if (selectionArgs != null) {
+            for (String arg : selectionArgs) {
+                Log.i(Tag, "Arg: " + arg);
+            }
+        }
+
+        Log.i(Tag, "Sort Order: " + sortOrder);
+
+        List<Pair<String, String>> dbs = db.getAttachedDbs();
+
+        Log.i(Tag, "Attached Databases:");
+
+        for (Pair<String, String> attached : dbs) {
+            Log.i(Tag, "DB: " + attached.second);
+        }
+
+        Log.i(Tag, "Result Set Columns:");
+
+        for (String column : columns) {
+            Log.i(Tag, " -> " + column);
+        }
+
         Cursor cursor = builder.query(db, columns, selection, selectionArgs, null, null, sortOrder);
+
+        if (cursor == null) {
+            return null;
+        }
+
+        cursor.moveToFirst();
+
+        while (!cursor.isAfterLast()) {
+            LitterAttribute attribute = new LitterAttribute(cursor);
+
+            Log.i(Tag, "Attribute: " + attribute);
+
+            cursor.moveToNext();
+        }
 
         return cursor;
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String baseWhere, String[] whereArgs) {
+        Log.i(Tag, "Update called for URI: " + uri.toString());
+
         SQLiteDatabase db = mHelper.getWritableDatabase();
 
         int updateCount = 0;
@@ -370,6 +452,8 @@ public class Box extends ContentProvider {
 
         switch (Uri_Matcher.match(uri)) {
             case Attribute_List:
+                Log.i(Tag, "Updating the attribute list...");
+
                 updateCount = db.update(BoxContract.Attribute.table, values, baseWhere, whereArgs);
 
                 break;

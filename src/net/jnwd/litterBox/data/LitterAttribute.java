@@ -1,6 +1,8 @@
 
 package net.jnwd.litterBox.data;
 
+import java.util.Locale;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 
@@ -46,6 +48,15 @@ public class LitterAttribute {
         type = typ;
     }
 
+    @Override
+    public String toString() {
+        return "" +
+                "LitterAttribute: " +
+                "ID (" + id + ") " +
+                "Description (" + description + ") " +
+                "Type (" + type + ")";
+    }
+
     public LitterAttribute(Cursor cursor) {
         this();
 
@@ -76,6 +87,10 @@ public class LitterAttribute {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public boolean isEnumerated() {
+        return getType().toLowerCase(Locale.getDefault()).startsWith("enum");
     }
 
     public static String createCommand() {
