@@ -69,6 +69,8 @@ public final class BoxContract {
         public static final Uri Content_Uri = Uri.withAppendedPath(BoxContract.Content_Uri,
                 "attributeValues");
 
+        public static final Uri Content_List_Uri = Uri.withAppendedPath(Content_Uri, "attribute");
+
         public static final String Content_Type = ContentResolver.CURSOR_DIR_BASE_TYPE
                 + "/box_attribute_values";
         public static final String Content_Item_Type = ContentResolver.CURSOR_ITEM_BASE_TYPE
@@ -176,6 +178,8 @@ public final class BoxContract {
     public static final class ClassAttribute {
         public static final Uri Content_Uri = Uri.withAppendedPath(BoxContract.Content_Uri,
                 "classAttributes");
+
+        public static final Uri Content_List_Uri = Uri.withAppendedPath(Content_Uri, "class");
 
         public static final String Content_Type = ContentResolver.CURSOR_DIR_BASE_TYPE
                 + "/box_class_attributes";
@@ -297,6 +301,8 @@ public final class BoxContract {
     public static final class EntityAttribute {
         public static final Uri Content_Uri = Uri.withAppendedPath(BoxContract.Content_Uri,
                 "entityAttributes");
+
+        public static final Uri Content_List_Uri = Uri.withAppendedPath(Content_Uri, "entity");
 
         public static final String Content_Type = ContentResolver.CURSOR_DIR_BASE_TYPE
                 + "/box_entity_attributes";

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,11 +19,15 @@ import android.widget.SimpleCursorAdapter;
 public class LitterBoxFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     public final String Tag = "litterBoxFragment";
 
-    public LoaderManager.LoaderCallbacks<Cursor> mCallbacks;
-
     public Context mContext;
 
     public SparseArray<SimpleCursorAdapter> adapters;
+
+    public String mAttributeFilter;
+    public String mClassFilter;
+    public String mClassAttributeFilter;
+    public String mEntityFilter;
+    public String mEntityAttributeFilter;
 
     @Override
     public void onAttach(Activity activity) {
@@ -39,7 +44,6 @@ public class LitterBoxFragment extends Fragment implements LoaderManager.LoaderC
 
         }
 
-        mCallbacks = this;
         adapters = new SparseArray<SimpleCursorAdapter>();
     }
 
@@ -70,9 +74,11 @@ public class LitterBoxFragment extends Fragment implements LoaderManager.LoaderC
             case Box.Attribute_ID:
                 Log.i(Tag, "Creating attribute ID loader...");
 
+                Log.i(Tag, "attributeID: " + mAttributeFilter);
+
                 loader = new CursorLoader(
                         mContext,
-                        BoxContract.Attribute.Content_Uri,
+                        Uri.withAppendedPath(BoxContract.Attribute.Content_Uri, mAttributeFilter),
                         BoxContract.Attribute.allColumns,
                         null,
                         null,
@@ -83,9 +89,41 @@ public class LitterBoxFragment extends Fragment implements LoaderManager.LoaderC
             case Box.Attribute_Value_List:
                 Log.i(Tag, "Creating attribute value list loader (not really)...");
 
+                Log.i(Tag, "attributeID: " + mAttributeFilter);
+
+                if (mAttributeFilter == null) {
+                    mAttributeFilter = "0";
+                }
+
+                loader = new CursorLoader(
+                        mContext,
+                        Uri.withAppendedPath(BoxContract.AttributeValue.Content_List_Uri,
+                                mAttributeFilter),
+                        BoxContract.AttributeValue.allColumns,
+                        null,
+                        null,
+                        null
+                        );
+
                 break;
             case Box.Attribute_Value_ID:
                 Log.i(Tag, "Creating attribute value ID loader (not really)...");
+
+                Log.i(Tag, "attributeValueID: " + mAttributeFilter);
+
+                if (mAttributeFilter == null) {
+                    mAttributeFilter = "0";
+                }
+
+                loader = new CursorLoader(
+                        mContext,
+                        Uri.withAppendedPath(BoxContract.AttributeValue.Content_Uri,
+                                mAttributeFilter),
+                        BoxContract.AttributeValue.allColumns,
+                        null,
+                        null,
+                        null
+                        );
 
                 break;
             case Box.Class_List:
@@ -104,14 +142,36 @@ public class LitterBoxFragment extends Fragment implements LoaderManager.LoaderC
             case Box.Class_ID:
                 Log.i(Tag, "Creating class ID loader (not really)...");
 
+                Log.i(Tag, "classID: " + mClassFilter);
+
+                if (mClassFilter == null) {
+                    mClassFilter = "0";
+                }
+
+                loader = new CursorLoader(
+                        mContext,
+                        Uri.withAppendedPath(BoxContract.Class.Content_Uri, mClassFilter),
+                        BoxContract.Class.allColumns,
+                        null,
+                        null,
+                        null
+                        );
+
                 break;
             case Box.Class_Attribute_List:
                 Log.i(Tag, "Creating class attribute list loader...");
 
+                Log.i(Tag, "classID: " + mClassFilter);
+
+                if (mClassFilter == null) {
+                    mClassFilter = "0";
+                }
+
                 loader = new CursorLoader(
                         mContext,
-                        BoxContract.ClassAttribute.Content_Uri,
-                        BoxContract.ClassAttribute.allColumns,
+                        Uri.withAppendedPath(BoxContract.ClassAttribute.Content_List_Uri,
+                                mClassFilter),
+                        BoxContract.Class.allColumns,
                         null,
                         null,
                         null
@@ -120,6 +180,22 @@ public class LitterBoxFragment extends Fragment implements LoaderManager.LoaderC
                 break;
             case Box.Class_Attribute_ID:
                 Log.i(Tag, "Creating class attribute ID loader (not really)...");
+
+                Log.i(Tag, "classAttributeID: " + mClassAttributeFilter);
+
+                if (mClassAttributeFilter == null) {
+                    mClassAttributeFilter = "0";
+                }
+
+                loader = new CursorLoader(
+                        mContext,
+                        Uri.withAppendedPath(BoxContract.ClassAttribute.Content_Uri,
+                                mClassAttributeFilter),
+                        BoxContract.Class.allColumns,
+                        null,
+                        null,
+                        null
+                        );
 
                 break;
             case Box.Entity_List:

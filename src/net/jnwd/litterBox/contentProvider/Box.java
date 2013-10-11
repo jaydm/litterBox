@@ -1,9 +1,6 @@
 
 package net.jnwd.litterBox.contentProvider;
 
-import java.util.List;
-
-import net.jnwd.litterBox.data.LitterAttribute;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -15,7 +12,6 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.Pair;
 
 public class Box extends ContentProvider {
     private static final String Tag = "box (ContentProvider)";
@@ -92,6 +88,13 @@ public class Box extends ContentProvider {
 
                 break;
             case Attribute_Value_List:
+                idStr = uri.getLastPathSegment();
+                where = BoxContract.AttributeValue.column_AttributeID + " = " + idStr;
+
+                if (!TextUtils.isEmpty(selection)) {
+
+                }
+
                 delCount = db.delete(BoxContract.AttributeValue.table, selection, selectionArgs);
 
                 break;
@@ -395,45 +398,10 @@ public class Box extends ContentProvider {
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
 
-        Log.i(Tag, "Querying table: " + builder.getTables());
-        Log.i(Tag, "Selection: " + selection);
-
-        if (selectionArgs != null) {
-            for (String arg : selectionArgs) {
-                Log.i(Tag, "Arg: " + arg);
-            }
-        }
-
-        Log.i(Tag, "Sort Order: " + sortOrder);
-
-        List<Pair<String, String>> dbs = db.getAttachedDbs();
-
-        Log.i(Tag, "Attached Databases:");
-
-        for (Pair<String, String> attached : dbs) {
-            Log.i(Tag, "DB: " + attached.second);
-        }
-
-        Log.i(Tag, "Result Set Columns:");
-
-        for (String column : columns) {
-            Log.i(Tag, " -> " + column);
-        }
-
         Cursor cursor = builder.query(db, columns, selection, selectionArgs, null, null, sortOrder);
 
         if (cursor == null) {
             return null;
-        }
-
-        cursor.moveToFirst();
-
-        while (!cursor.isAfterLast()) {
-            LitterAttribute attribute = new LitterAttribute(cursor);
-
-            Log.i(Tag, "Attribute: " + attribute);
-
-            cursor.moveToNext();
         }
 
         return cursor;
