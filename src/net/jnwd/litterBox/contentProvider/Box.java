@@ -16,16 +16,19 @@ import android.util.Log;
 public class Box extends ContentProvider {
     private static final String Tag = "box (ContentProvider)";
 
-    public static final int Attribute_List = 1;
+    public static final int Attribute = 1;
     public static final int Attribute_ID = 2;
+    public static final int Attribute_Value = 10;
     public static final int Attribute_Value_List = 11;
     public static final int Attribute_Value_ID = 12;
-    public static final int Class_List = 21;
+    public static final int Class = 21;
     public static final int Class_ID = 22;
+    public static final int Class_Attribute = 30;
     public static final int Class_Attribute_List = 31;
     public static final int Class_Attribute_ID = 32;
-    public static final int Entity_List = 41;
+    public static final int Entity = 41;
     public static final int Entity_ID = 42;
+    public static final int Entity_Attribute = 50;
     public static final int Entity_Attribute_List = 51;
     public static final int Entity_Attribute_ID = 52;
 
@@ -33,17 +36,20 @@ public class Box extends ContentProvider {
 
     static {
         Uri_Matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        Uri_Matcher.addURI(BoxContract.Authority, "attributes", Attribute_List);
+        Uri_Matcher.addURI(BoxContract.Authority, "attributes", Attribute);
         Uri_Matcher.addURI(BoxContract.Authority, "attributes/#", Attribute_ID);
+        Uri_Matcher.addURI(BoxContract.Authority, "attributeValues", Attribute_Value);
         Uri_Matcher.addURI(BoxContract.Authority, "attributeValues/attribute/#",
                 Attribute_Value_List);
         Uri_Matcher.addURI(BoxContract.Authority, "attributeValues/#", Attribute_Value_ID);
-        Uri_Matcher.addURI(BoxContract.Authority, "classes", Class_List);
+        Uri_Matcher.addURI(BoxContract.Authority, "classes", Class);
         Uri_Matcher.addURI(BoxContract.Authority, "classes/#", Class_ID);
+        Uri_Matcher.addURI(BoxContract.Authority, "ClassAttributes", Class_Attribute);
         Uri_Matcher.addURI(BoxContract.Authority, "classAttributes/class/#", Class_Attribute_List);
         Uri_Matcher.addURI(BoxContract.Authority, "classAttributes/#", Class_Attribute_ID);
-        Uri_Matcher.addURI(BoxContract.Authority, "entities", Entity_List);
+        Uri_Matcher.addURI(BoxContract.Authority, "entities", Entity);
         Uri_Matcher.addURI(BoxContract.Authority, "entities/#", Entity_ID);
+        Uri_Matcher.addURI(BoxContract.Authority, "entityAttributes", Entity_Attribute);
         Uri_Matcher.addURI(BoxContract.Authority, "entityAttributes/entity/#",
                 Entity_Attribute_List);
         Uri_Matcher.addURI(BoxContract.Authority, "entityAttributes/#", Entity_Attribute_ID);
@@ -72,10 +78,6 @@ public class Box extends ContentProvider {
         String where;
 
         switch (Uri_Matcher.match(uri)) {
-            case Attribute_List:
-                delCount = db.delete(BoxContract.Attribute.table, selection, selectionArgs);
-
-                break;
             case Attribute_ID:
                 idStr = uri.getLastPathSegment();
                 where = BoxContract.Attribute.column_ID + " = " + idStr;
@@ -87,18 +89,7 @@ public class Box extends ContentProvider {
                 delCount = db.delete(BoxContract.Attribute.table, where, selectionArgs);
 
                 break;
-            case Attribute_Value_List:
-                idStr = uri.getLastPathSegment();
-                where = BoxContract.AttributeValue.column_AttributeID + " = " + idStr;
-
-                if (!TextUtils.isEmpty(selection)) {
-
-                }
-
-                delCount = db.delete(BoxContract.AttributeValue.table, selection, selectionArgs);
-
-                break;
-            case Attribute_Value_ID:
+            case Attribute_Value:
                 idStr = uri.getLastPathSegment();
                 where = BoxContract.AttributeValue.column_ID + " = " + idStr;
 
@@ -109,11 +100,7 @@ public class Box extends ContentProvider {
                 delCount = db.delete(BoxContract.AttributeValue.table, where, selectionArgs);
 
                 break;
-            case Class_List:
-                delCount = db.delete(BoxContract.Class.table, selection, selectionArgs);
-
-                break;
-            case Class_ID:
+            case Class:
                 idStr = uri.getLastPathSegment();
                 where = BoxContract.Class.column_ID + " = " + idStr;
 
@@ -124,11 +111,7 @@ public class Box extends ContentProvider {
                 delCount = db.delete(BoxContract.Class.table, where, selectionArgs);
 
                 break;
-            case Class_Attribute_List:
-                delCount = db.delete(BoxContract.ClassAttribute.table, selection, selectionArgs);
-
-                break;
-            case Class_Attribute_ID:
+            case Class_Attribute:
                 idStr = uri.getLastPathSegment();
                 where = BoxContract.ClassAttribute.column_ID + " = " + idStr;
 
@@ -139,11 +122,7 @@ public class Box extends ContentProvider {
                 delCount = db.delete(BoxContract.ClassAttribute.table, where, selectionArgs);
 
                 break;
-            case Entity_List:
-                delCount = db.delete(BoxContract.Entity.table, selection, selectionArgs);
-
-                break;
-            case Entity_ID:
+            case Entity:
                 idStr = uri.getLastPathSegment();
                 where = BoxContract.Attribute.column_ID + " = " + idStr;
 
@@ -154,11 +133,7 @@ public class Box extends ContentProvider {
                 delCount = db.delete(BoxContract.Entity.table, where, selectionArgs);
 
                 break;
-            case Entity_Attribute_List:
-                delCount = db.delete(BoxContract.EntityAttribute.table, selection, selectionArgs);
-
-                break;
-            case Entity_Attribute_ID:
+            case Entity_Attribute:
                 idStr = uri.getLastPathSegment();
                 where = BoxContract.Attribute.column_ID + " = " + idStr;
 
@@ -185,7 +160,7 @@ public class Box extends ContentProvider {
         Log.i(Tag, "Get Type called for URI: " + uri.toString());
 
         switch (Uri_Matcher.match(uri)) {
-            case Attribute_List:
+            case Attribute:
                 return BoxContract.Attribute.Content_Type;
             case Attribute_ID:
                 return BoxContract.Attribute.Content_Item_Type;
@@ -193,7 +168,7 @@ public class Box extends ContentProvider {
                 return BoxContract.AttributeValue.Content_Type;
             case Attribute_Value_ID:
                 return BoxContract.AttributeValue.Content_Item_Type;
-            case Class_List:
+            case Class:
                 return BoxContract.Class.Content_Type;
             case Class_ID:
                 return BoxContract.Class.Content_Item_Type;
@@ -201,7 +176,7 @@ public class Box extends ContentProvider {
                 return BoxContract.ClassAttribute.Content_Type;
             case Class_Attribute_ID:
                 return BoxContract.ClassAttribute.Content_Item_Type;
-            case Entity_List:
+            case Entity:
                 return BoxContract.Entity.Content_Type;
             case Entity_ID:
                 return BoxContract.Entity.Content_Item_Type;
@@ -223,23 +198,27 @@ public class Box extends ContentProvider {
         long id = 0;
 
         switch (Uri_Matcher.match(uri)) {
-            case Attribute_List:
+            case Attribute:
                 id = db.insert(BoxContract.Attribute.table, null, values);
 
                 break;
-            case Class_List:
+            case Attribute_Value:
+                id = db.insert(BoxContract.AttributeValue.table, null, values);
+
+                break;
+            case Class:
                 id = db.insert(BoxContract.Class.table, null, values);
 
                 break;
-            case Class_Attribute_List:
+            case Class_Attribute:
                 id = db.insert(BoxContract.ClassAttribute.table, null, values);
 
                 break;
-            case Entity_List:
+            case Entity:
                 id = db.insert(BoxContract.Entity.table, null, values);
 
                 break;
-            case Entity_Attribute_List:
+            case Entity_Attribute:
                 id = db.insert(BoxContract.EntityAttribute.table, null, values);
 
                 break;
@@ -271,7 +250,7 @@ public class Box extends ContentProvider {
         SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 
         switch (Uri_Matcher.match(uri)) {
-            case Attribute_List:
+            case Attribute:
                 Log.i(Tag, "Building the attribute list query...");
 
                 builder.setTables(BoxContract.Attribute.table);
@@ -312,7 +291,7 @@ public class Box extends ContentProvider {
                         + uri.getLastPathSegment());
 
                 break;
-            case Class_List:
+            case Class:
                 Log.i(Tag, "Building the class list query...");
 
                 builder.setTables(BoxContract.Class.table);
@@ -353,7 +332,7 @@ public class Box extends ContentProvider {
                         + uri.getLastPathSegment());
 
                 break;
-            case Entity_List:
+            case Entity:
                 Log.i(Tag, "Building the entity list query...");
 
                 builder.setTables(BoxContract.Entity.table);
@@ -419,12 +398,6 @@ public class Box extends ContentProvider {
         String where;
 
         switch (Uri_Matcher.match(uri)) {
-            case Attribute_List:
-                Log.i(Tag, "Updating the attribute list...");
-
-                updateCount = db.update(BoxContract.Attribute.table, values, baseWhere, whereArgs);
-
-                break;
             case Attribute_ID:
                 idStr = uri.getLastPathSegment();
                 where = BoxContract.Attribute.column_ID + " = " + idStr;
@@ -436,10 +409,6 @@ public class Box extends ContentProvider {
                 updateCount = db.update(BoxContract.Attribute.table, values, where, whereArgs);
 
                 break;
-            case Class_List:
-                updateCount = db.update(BoxContract.Class.table, values, baseWhere, whereArgs);
-
-                break;
             case Class_ID:
                 idStr = uri.getLastPathSegment();
                 where = BoxContract.Class.column_ID + " = " + idStr;
@@ -449,10 +418,6 @@ public class Box extends ContentProvider {
                 }
 
                 updateCount = db.update(BoxContract.Class.table, values, where, whereArgs);
-
-                break;
-            case Entity_List:
-                updateCount = db.update(BoxContract.Entity.table, values, baseWhere, whereArgs);
 
                 break;
             case Entity_ID:

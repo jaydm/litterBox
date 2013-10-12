@@ -58,7 +58,7 @@ public class LitterBoxFragment extends Fragment implements LoaderManager.LoaderC
         CursorLoader loader = null;
 
         switch (id) {
-            case Box.Attribute_List:
+            case Box.Attribute:
                 Log.i(Tag, "Creating attribute list loader...");
 
                 loader = new CursorLoader(
@@ -126,7 +126,7 @@ public class LitterBoxFragment extends Fragment implements LoaderManager.LoaderC
                         );
 
                 break;
-            case Box.Class_List:
+            case Box.Class:
                 Log.i(Tag, "Creating class list loader...");
 
                 loader = new CursorLoader(
@@ -198,7 +198,7 @@ public class LitterBoxFragment extends Fragment implements LoaderManager.LoaderC
                         );
 
                 break;
-            case Box.Entity_List:
+            case Box.Entity:
                 Log.i(Tag, "Creating entity list loader...");
 
                 loader = new CursorLoader(
@@ -238,7 +238,7 @@ public class LitterBoxFragment extends Fragment implements LoaderManager.LoaderC
 
         try {
             switch (id) {
-                case Box.Attribute_List:
+                case Box.Attribute:
                     Log.i(Tag, "Swapping out cursor for attribute list adapter...");
 
                     break;
@@ -254,7 +254,7 @@ public class LitterBoxFragment extends Fragment implements LoaderManager.LoaderC
                     Log.i(Tag, "Swapping out cursor for attribute value ID adapter...");
 
                     break;
-                case Box.Class_List:
+                case Box.Class:
                     Log.i(Tag, "Swapping out cursor for class list adapter...");
 
                     break;
@@ -270,7 +270,7 @@ public class LitterBoxFragment extends Fragment implements LoaderManager.LoaderC
                     Log.i(Tag, "Swapping out cursor for class attribute ID adapter...");
 
                     break;
-                case Box.Entity_List:
+                case Box.Entity:
                     Log.i(Tag, "Swapping out cursor for entity list adapter...");
 
                     break;
@@ -308,7 +308,7 @@ public class LitterBoxFragment extends Fragment implements LoaderManager.LoaderC
 
         try {
             switch (id) {
-                case Box.Attribute_List:
+                case Box.Attribute:
                     Log.i(Tag, "Setting up to clear the attribute list adapter...");
 
                     break;
@@ -324,7 +324,7 @@ public class LitterBoxFragment extends Fragment implements LoaderManager.LoaderC
                     Log.i(Tag, "Setting up to clear the attribute value ID adapter...");
 
                     break;
-                case Box.Class_List:
+                case Box.Class:
                     Log.i(Tag, "Setting up to clear the class list adapter...");
 
                     break;
@@ -340,7 +340,7 @@ public class LitterBoxFragment extends Fragment implements LoaderManager.LoaderC
                     Log.i(Tag, "Setting up to clear the class attribute id adapter...");
 
                     break;
-                case Box.Entity_List:
+                case Box.Entity:
                     Log.i(Tag, "Setting up to clear the entity list adapter...");
 
                     break;

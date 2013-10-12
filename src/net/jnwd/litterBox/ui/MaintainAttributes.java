@@ -88,6 +88,8 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
 
                         break;
                     case 1:
+                        ((ValueFragment) ((AttributePagerAdapter) mViewPager.getAdapter())
+                                .getItem(1)).resetAdapter();
 
                         break;
                     default:
@@ -232,16 +234,16 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
                     android.R.id.text1
             };
 
-            adapters.put(Box.Attribute_List, new SimpleCursorAdapter(getActivity(),
+            adapters.put(Box.Attribute, new SimpleCursorAdapter(getActivity(),
                     android.R.layout.simple_spinner_item, null, from, to, 0));
 
             Spinner attributeID = (Spinner) getActivity().findViewById(R.id.maAttributeID);
 
-            attributeID.setAdapter(adapters.get(Box.Attribute_List));
+            attributeID.setAdapter(adapters.get(Box.Attribute));
 
             attributeID.setOnItemSelectedListener(this);
 
-            getActivity().getLoaderManager().initLoader(Box.Attribute_List, null, this);
+            getActivity().getLoaderManager().initLoader(Box.Attribute, null, this);
         }
 
         @Override
@@ -305,7 +307,7 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
 
             attributeDescription.setText("");
 
-            getActivity().getLoaderManager().restartLoader(Box.Attribute_List, null, this);
+            getActivity().getLoaderManager().restartLoader(Box.Attribute, null, this);
         }
 
         @Override
