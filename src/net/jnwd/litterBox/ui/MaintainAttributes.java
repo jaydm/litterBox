@@ -145,6 +145,8 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
 
         @Override
         public Fragment getItem(int index) {
+            Log.i(Tag, "Changing the tab...");
+
             Fragment page;
 
             page = pages.get(index);
