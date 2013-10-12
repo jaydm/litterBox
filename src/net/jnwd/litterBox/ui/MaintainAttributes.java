@@ -129,6 +129,8 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
     }
 
     public static class AttributePagerAdapter extends FragmentStatePagerAdapter {
+        private final String Tag = "pager";
+
         private final int pageCount = 2;
         private final String[] pageTitle = {
                 "Attributes",
@@ -159,6 +161,10 @@ public class MaintainAttributes extends LitterBoxActivity implements ActionBar.T
                     break;
                 default:
                     if (page != null) {
+                        Log.i(Tag, "The value fragment is already created...");
+                        Log.i(Tag,
+                                "Reset the adapters (and fill in the attribute specific stuff...");
+
                         ((ValueFragment) page).resetAdapter();
                     } else {
                         page = new ValueFragment();
